@@ -1,6 +1,6 @@
 import type { Component, VNodeProps } from 'vue'
-import { InputEmitsType } from '../components/Input/index.vue'
-import { SelectEmitsType } from '../components/Select/index.vue'
+import { InputEmitsType } from '../components/Input.vue'
+import { SelectEmitsType } from '../components/Select.vue'
 
 type ExtractPropTypes<T extends Component> = T extends new (...args: any) => any
     ? Omit<InstanceType<T>['$props'], keyof VNodeProps>
@@ -13,8 +13,8 @@ type ExtractPropTypes<T extends Component> = T extends new (...args: any) => any
  */
 
 export interface ComponentProps {
-    Input: ExtractPropTypes<typeof import('../components/Input/index.vue')['default']>;
-    Select: ExtractPropTypes<typeof import('../components/Select/index.vue')['default']>;
+    Input: ExtractPropTypes<typeof import('../components/Input.vue')['default']>;
+    Select: ExtractPropTypes<typeof import('../components/Select.vue')['default']>;
 }
 
 export interface ComponentEmits {

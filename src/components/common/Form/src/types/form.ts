@@ -1,18 +1,36 @@
-import { ComponentType, ComponentProps, ComponentEmits } from './index'
-
-interface BaseFormSchema<T extends ComponentType = any> {
-    key: string; // （回显表格数据所需key | 表单绑定所需要的key）
-    keyArr?: string[]; //  多值的时候，需要key一一对应
-    title?: string; // 名称
-    componentProps?: ComponentProps[T]; // 组件props参数
-    componentEmits?:ComponentEmits[T]; // 组件执行的一些方法
+import { Common } from '@/types'
+/**
+ * 栅格样式类型
+ * */
+export interface ColEx {
+    span?: number; // 栅格占据的列数
+    offset?: number; // 栅格左侧的间隔格数
+    xs?: number; // <768px
+    sm?: number; // ≥768px
+    md?: number; // ≥992px
+    lg?: number; // ≥1200px
+    xl?: number; // ≥1920px
 }
-export interface ComponentFormSchema<T extends ComponentType = any> extends BaseFormSchema<T> {
-    component: T;
+
+/**
+ * useForm所需参数
+ * */
+export interface BasicFormProps {
+    schemas?:Common.BasicForm[], // 表单项数据
+    labelPosition?: 'left' | 'top' | 'right';// 表单标签位置
+    baseColspan?: ColEx; // 整个表单的栅格布局
+    gutter?: number; // 栅格间隔
+    globDisabled?: boolean; // 整个表单是否置灰
+    formData?: Global.Recordable; // 表单数据，如编辑时，或者搜索时加了缓存，进来的时候要直接回显
 }
 
-type ComponentFormSchemaType<T extends ComponentType = ComponentType> = T extends any
-    ? ComponentFormSchema<T>
-    : never;
+export interface FormActionType {
+    setProps: (props: BasicFormProps) => void;
+    setFormModelValue: (key: string, value: any, schema: Common.BasicForm) => void;
+    setFieldsValue: (values: Global.Recordable) => void
+}
 
-export type FormSchema = ComponentFormSchemaType;
+export interface EmitEvent {
+    (e: 'register', tableAction: FormActionType): void;
+    (e: 'submit', formModel: Global.Recordable): void;
+}
