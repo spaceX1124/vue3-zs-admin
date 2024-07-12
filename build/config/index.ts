@@ -29,6 +29,14 @@ export function defineAppConfig<T extends DefineOptions> (defineOptions: T ) {
     //     }
     //   }
     // },
+    css: {
+      preprocessorOptions: {
+        scss: {
+          additionalData: `@use "@/assets/style/element/index.scss" as *;
+        @use "@/assets/style/variable.scss" as *;`
+        }
+      }
+    },
     server: {
       port: 6688,
       open: false,

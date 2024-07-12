@@ -41,3 +41,21 @@ pnpm i unplugin-vue-components -D
 ### vite配置相关
 1. process：该对象是node.js环境中的一个特殊的对象，提供了当前node.js进程的信息，不能直接在js中使用，浏览器环境不支持原生的process对象。但是在vite或者其他前端构建工具的开发环境中，由于利用的rollup，webpack或esbuild的打包器，都是**基于node.js环境运行开发服务器的**，因此在vite.config.ts或者.env文件可以访问
 2. define：就是定义全局的常量，控制环境变量（如环境变量）、API端点、版本信息等非常有用
+
+
+### 修改element-plus主题色
+
+### 解决import.meta.env报错问题
+需要再tsconfig.json中加入
+```markdown
+"types": ["vite/client"]
+```
+在vite.config.ts中不能使用import.meta，只能如下方式获取环境变量
+```markdown
+import { defineConfig, loadEnv } from 'vite'
+export default (({ mode }) => {
+    const VITE_APP_SERVER_URL: string = loadEnv(mode, process.cwd()).VITE_APP_SERVER_URL;
+    return defineConfig({})
+})
+
+```
