@@ -44,6 +44,52 @@ pnpm i unplugin-vue-components -D
 
 
 ### 修改element-plus主题色
+为什么使用@use，而不用@import
+```markdown
+编译前
+// component-a.scss
+@import 'variables';
+.component-a {
+color: $primary-color;
+}
+
+// component-b.scss
+@import 'variables';
+.component-b {
+background-color: $secondary-color;
+}
+编译后
+/* 编译后的部分CSS */
+.component-a {
+color: #1a1a1a;
+}
+
+.component-b {
+background-color: #f1f1f1;
+}
+
+// 重复的部分
+$primary-color: #1a1a1a;
+$secondary-color: #f1f1f1;
+$primary-color: #1a1a1a;
+$secondary-color: #f1f1f1;
+a中和b中都引入变量文件，会导致编译后css中出现2份重复的变量定义
+
+// 使用 @use 重构
+// _variables.scss 保持不变
+
+// component-a.scss
+@use 'variables' as *; // 使用 * 导入所有变量到当前作用域，无须命名空间
+.component-a {
+color: $primary-color;
+}
+
+// component-b.scss
+@use 'variables' as *; // 同上
+.component-b {
+background-color: $secondary-color;
+}
+```
 
 ### 解决import.meta.env报错问题
 需要再tsconfig.json中加入
