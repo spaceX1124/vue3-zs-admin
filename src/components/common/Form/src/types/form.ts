@@ -28,6 +28,7 @@ export interface FormActionType {
     setProps: (props: BasicFormProps) => void;
     setFormModelValue: (key: string, value: any, schema: Common.BasicForm) => void;
     setFieldsValue: (values: Global.Recordable) => void
+    updateSchema: (schema: Common.BasicForm | Common.BasicForm[]) => void
 }
 
 export interface EmitEvent {

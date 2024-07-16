@@ -1,6 +1,6 @@
 <template>
   <el-col :span="24">
-    <EButton @click="handleSubmit">提交</EButton>
+    <el-button type="primary" @click="handleSubmit">提交</el-button>
   </el-col>
 </template>
 <script lang="ts" setup>

@@ -11,9 +11,10 @@ import { componentMap } from '../componentMap.ts'
 import { type FormItemRule } from 'element-plus'
 import { NO_AUTO_LINK_COMPONENTS } from '../helper.ts'
 import { Common } from '@/types'
+import { isNullOrUndefOrEmpty } from '@/utils/is.ts'
 
 interface PropsType {
-  schema: Common.BasicParams; // 当前字段配置信息
+  schema: Common.BasicForm; // 当前字段配置信息
   formProps: BasicFormProps; // 当前表单配置信息
   formModel: Global.Recordable; // 当前表单数据
   setFormModelValue: (key: string, value: any) => void // 设置当前字段数据
@@ -24,7 +25,7 @@ const modelValue = computed({
   get () {
     const { key } = props.schema
     // 一开始取不到，就返回''
-    return props.formModel[key] || ''
+    return !isNullOrUndefOrEmpty(props.formModel[key]) ? props.formModel[key] : ''
   },
   set (newVal) {
     const { key } = props.schema
@@ -57,13 +58,16 @@ const getBindingElFormItem = computed(() => {
 
 // 给component绑定一些参数
 const getBindingComponent = computed(() => {
-  let { componentProps = {}, title, component } = props.schema
+  let { componentProps = {}, title, component, dataList, async, renderComponentSlot } = props.schema
   return {
     options: {
       placeholder: `${NO_AUTO_LINK_COMPONENTS.includes(component) ? '请输入' : '请选择'}${title}`,
-      ...componentProps
-    },
-    schema: props.schema
+      ...componentProps,
+      dataList,
+      async,
+      renderComponentSlot
+    }
+    // schema: props.schema
   }
 })
 

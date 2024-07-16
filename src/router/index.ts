@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+
     {
       path: '/',
       component: () => import('@/layout/index.vue'),
@@ -14,6 +15,10 @@ const router = createRouter({
             {
               path: 'input',
               component: () => import('@//views/form/input/index.vue')
+            },
+            {
+              path: 'select',
+              component: () => import('@//views/form/select/index.vue')
             }
           ]
         }

@@ -10,5 +10,6 @@ export namespace Common {
     export interface List {
         label: string;
         value: any;
+        disabled?: boolean;
     }
 }

@@ -17,13 +17,16 @@
 import { BasicFormProps, EmitEvent, FormActionType } from './types/form.ts'
 import FormItem from './components/FormItem.vue'
 import FormAction from './components/FormAction.vue'
-import { deepMerge } from '@/utils/tools.ts'
+import { cloneDeep, deepMerge } from '@/utils/tools.ts'
 import { useFormValues } from './hooks/useFormValues.ts'
 import { useFormEvent } from './hooks/useFormEvent.ts'
 import { type FormInstance } from 'element-plus'
+import { Common } from '@/types'
 
+// 表单数据
 const formModel = reactive<Global.Recordable>({})
 const ElFormRef = ref<FormInstance | null>(null)
+const schemaRef = ref<Common.BasicForm[]>([])
 
 // 修改表单中的值
 function setFormModelValue (key: string, value: any) {
@@ -39,7 +42,16 @@ let getProps = computed(() => {
 })
 
 const showSchemas = computed(() => {
-  return unref(getProps).schemas || []
+  console.log('字段列表刷新了0', schemaRef)
+  const schemas = cloneDeep(unref(schemaRef).length ? unref(schemaRef) : unref(getProps).schemas)
+  // 处理可显示的字段
+  const showList = schemas?.filter(schema => {
+    if (schema.componentEmits) {
+      schema.componentEmits = schema.componentEmits({ updateSchema })
+    }
+    return !schema.formHidden
+  })
+  return showList || []
 })
 
 // 给el-form绑定的一些参数
@@ -60,10 +72,12 @@ const { initDefault } = useFormValues(getProps, {
   formModel
 })
 // 操作表单数据相关方法
-const { setFieldsValue, submit } = useFormEvent(getProps, {
+const { setFieldsValue, submit, updateSchema } = useFormEvent(getProps, {
   formModel,
   ElFormRef,
-  emit
+  emit,
+  schemaRef
+
 })
 
 // 设置外部传递进来的参数
@@ -73,8 +87,9 @@ function setProps (propsData: BasicFormProps) {
 
 const formAction: FormActionType = {
   setProps,
-  setFormModelValue,
-  setFieldsValue
+  setFormModelValue, // 表单某个字段值改变时调用，为表单数据设置值
+  setFieldsValue, // 手动为某些字段设置值
+  updateSchema // 更新一个或多个字段列表
 }
 emit('register', formAction)
 

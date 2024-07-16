@@ -4,7 +4,8 @@
       <el-menu router class="menu-box">
         <el-sub-menu index="2">
           <template #title>表单</template>
-          <el-menu-item index="/form/input">Input</el-menu-item>
+          <el-menu-item index="/form/input">input</el-menu-item>
+          <el-menu-item index="/form/select">select</el-menu-item>
         </el-sub-menu>
       </el-menu>
     </el-aside>

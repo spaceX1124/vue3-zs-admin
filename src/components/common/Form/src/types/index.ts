@@ -3,7 +3,7 @@ import { InputEmitsType } from '../components/Input.vue'
 import { SelectEmitsType } from '../components/Select.vue'
 
 type ExtractPropTypes<T extends Component> = T extends new (...args: any) => any
-    ? Omit<InstanceType<T>['$props'], keyof VNodeProps>
+    ? Omit<InstanceType<T>['$props']['options'], keyof VNodeProps>
     : never;
 
 /**
@@ -15,11 +15,13 @@ type ExtractPropTypes<T extends Component> = T extends new (...args: any) => any
 export interface ComponentProps {
     Input: ExtractPropTypes<typeof import('../components/Input.vue')['default']>;
     Select: ExtractPropTypes<typeof import('../components/Select.vue')['default']>;
+    BasicTitle: ExtractPropTypes<typeof import('../components/BasicTitle.vue')['default']>;
 }
 
 export interface ComponentEmits {
     Input: InputEmitsType;
     Select: SelectEmitsType;
+    BasicTitle: Object
 }
 
 export type ComponentType = keyof ComponentProps;

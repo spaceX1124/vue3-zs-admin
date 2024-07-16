@@ -5,7 +5,7 @@ export const IdCardReg = /^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$|
  * */
 export function validateIdCard (rule: any, value: any, callback: any) {
   if (value && !IdCardReg.test(value)) {
-    callback(new Error('请输入正确的身份证号码'))
+    callback(new Error('请输入正确的身份证号码'), rule)
   } else {
     callback()
   }
@@ -18,7 +18,7 @@ export const phoneReg = /^1[3-9]\d{9}$/
  * */
 export function validatePhone (rule: any, value: any, callback: any) {
   if (value && !phoneReg.test(value)) {
-    callback(new Error('请输入正确的手机号码'))
+    callback(new Error('请输入正确的手机号码'), rule)
   } else {
     callback()
   }
@@ -30,7 +30,7 @@ export const emailReg = /^\w+@[a-zA-Z0-9]+((\.[a-z0-9A-Z]{1,})+)$/
  * */
 export function validateEmail (rule: any, value: any, callback: any) {
   if (value && !emailReg.test(value)) {
-    callback(new Error('请输入正确的邮箱'))
+    callback(new Error('请输入正确的邮箱'), rule)
   } else {
     callback()
   }

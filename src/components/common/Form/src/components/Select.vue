@@ -14,24 +14,30 @@
       :label="item.label"
       :value="item.value"
       :key="item.value"
+      :disabled="item.disabled"
     />
   </el-select>
 </template>
 <script lang="ts">
 export type SelectEmitsType = {
   clear?: () => void;
+  change?: (innerValue?: string | string[]) => void;
 }
 </script>
 <script lang="ts" setup>
 import { Common } from '@/types'
-import { isArray } from '@/utils/is.ts'
+import { isArray, isNullOrUndefOrEmpty } from '@/utils/is.ts'
+import type { AsyncType, RenderComponentSlot } from '@/types/form.ts'
 interface PropsType {
-  schema: Common.BasicParams; // 当前字段配置信息
   modelValue: string | number | string[] | number[];
   options?: {
     multiple?: boolean; // 是否多选
     disabled?: boolean; // 是否置灰
     placeholder?: string;
+    dataList?: Common.List[];// 数据列表
+    async?: AsyncType; // 异步请求及字段取值自定义
+    renderComponentSlot?: RenderComponentSlot | RenderComponentSlot[];// 自定义插槽
+    componentEmits?: SelectEmitsType; // 暴露出去的事件
   }
 }
 const props = withDefaults(defineProps<PropsType>(), {
@@ -44,7 +50,7 @@ const props = withDefaults(defineProps<PropsType>(), {
 const emit = defineEmits(['update:modelValue'])
 const innerValue = computed({
   get () {
-    if(!props.modelValue) return props.options.multiple ? [] : ''
+    if(isNullOrUndefOrEmpty(props.modelValue)) return props.options.multiple ? [] : ''
     if (props.options.multiple) {// 多选
       if (isArray(props.modelValue)) {
         return props.modelValue.map(String)
@@ -56,30 +62,38 @@ const innerValue = computed({
     }
   },
   set (newVal) {
-    console.log(newVal, 'newVal')
+    console.log(newVal, 'newVal222')
     emit('update:modelValue', newVal)
   }
 })
 
 // 要展示的list数据
 const showList = ref<Common.List[]>([])
+// 控制接口请求只请求一次
 const flag = ref(true)
+// 控制加载状态
 const loading = ref(false)
 onMounted(() => {
   // 不异步返回的情况下取dataList
-  if (!props.schema.async) {
-    dealDataList(props.schema)
+  if (!props.options.async) {
+    dealDataList(props.options.dataList)
   }
 })
 
-function change (val: string | number | string[] | number[]) {
+// 值只可能是字符串或者字符串数组了，因为下拉数据统一处理成字符串了
+function change (val: string | string[]) {
   innerValue.value = val
+  const { componentEmits } = props.options
+  if (componentEmits && componentEmits.change) {
+    componentEmits.change(unref(innerValue))
+  }
 }
 
 async function remoteMethod () {
-  if (unref(flag) && props.schema.async && props.schema.async.url) {
+  if (unref(flag) && props.options.async && props.options.async.url) {
     try {
-      const { label = 'label', value = 'value', url, data } = props.schema.async
+      const { label = 'label', value = 'value', url, data } = props.options.async
+      console.log(url, data)
       loading.value = true
       // 先模拟请求
       const res = await getMockDataList()
@@ -99,9 +113,15 @@ async function remoteMethod () {
   }
 }
 // 处理下拉数据
-function dealDataList () {
-  if (props.schema?.dataList) {
-
+function dealDataList (arr?: Common.List[]) {
+  if (arr?.length) {
+    showList.value = arr.map(item => {
+      return {
+        label: item.label,
+        value: String(item.value),
+        disabled: item.disabled
+      }
+    })
   }
 }
 // 模拟接口异步返回数据

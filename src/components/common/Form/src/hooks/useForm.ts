@@ -24,6 +24,9 @@ export function useForm (formProps?: BasicFormProps): [(tableAction: FormActionT
     },
     setFieldsValue: (values) => {
       tableActionRef.value?.setFieldsValue(values)
+    },
+    updateSchema: (schema) => {
+      tableActionRef.value?.updateSchema(schema)
     }
   }
 

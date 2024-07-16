@@ -14,17 +14,17 @@
     clearable
     @clear="clear"
   >
-    <template #prefix v-if="checkSlot('prefix', schema)">
-      <SlotRender :slotRender="getSlot('prefix', schema)"/>
+    <template #prefix v-if="checkSlot('prefix', options.renderComponentSlot)">
+      <SlotRender :slotRender="getSlot('prefix', options.renderComponentSlot)"/>
     </template>
-    <template #suffix v-if="checkSlot('suffix',schema)">
-      <SlotRender :slotRender="getSlot('suffix',schema)"/>
+    <template #suffix v-if="checkSlot('suffix',options.renderComponentSlot)">
+      <SlotRender :slotRender="getSlot('suffix',options.renderComponentSlot)"/>
     </template>
-    <template #prepend v-if="checkSlot('prepend',schema)">
-      <SlotRender :slotRender="getSlot('prepend',schema)"/>
+    <template #prepend v-if="checkSlot('prepend',options.renderComponentSlot)">
+      <SlotRender :slotRender="getSlot('prepend',options.renderComponentSlot)"/>
     </template>
-    <template #append v-if="checkSlot('append',schema)">
-      <SlotRender :slotRender="getSlot('append',schema)"/>
+    <template #append v-if="checkSlot('append',options.renderComponentSlot)">
+      <SlotRender :slotRender="getSlot('append',options.renderComponentSlot)"/>
     </template>
   </el-input>
 </template>
@@ -39,10 +39,9 @@ export type InputEmitsType = {
 <script lang="ts" setup>
 import SlotRender from './slotRender.vue'
 import { checkSlot, getSlot } from '../helper.ts'
-import { Common } from '@/types'
+import type { RenderComponentSlot } from '@/types/form.ts'
 
 interface PropsType {
-  schema: Common.BasicParams; // 当前字段配置信息
   modelValue: string | number;
   options?: {
     placeholder?: string;
@@ -56,6 +55,8 @@ interface PropsType {
     showPassword?: boolean; // 是否显示切换密码图标
     autosize?: Global.Recordable | boolean; // textarea高度配置
     autofocus?: boolean; // 是否自动聚焦
+    renderComponentSlot?: RenderComponentSlot | RenderComponentSlot[];// 自定义插槽
+    componentEmits?: InputEmitsType; // 暴露出去的事件
   }
 }
 const props = withDefaults(defineProps<PropsType>(), {
@@ -88,7 +89,7 @@ function input (val: string) {
     }
   }
   innerValue.value = temp
-  const { componentEmits } = props.schema
+  const { componentEmits } = props.options
   if (componentEmits && componentEmits.input) {
     componentEmits.input(temp)
   }
@@ -108,19 +109,19 @@ function formatNumber (val:string, dec: number){
 }
 
 function blur () {
-  const { componentEmits } = props.schema
+  const { componentEmits } = props.options
   if (componentEmits && componentEmits.blur) {
     componentEmits.blur(unref(innerValue))
   }
 }
 function focus () {
-  const { componentEmits } = props.schema
+  const { componentEmits } = props.options
   if (componentEmits && componentEmits.focus) {
     componentEmits.focus(unref(innerValue))
   }
 }
 function clear () {
-  const { componentEmits } = props.schema
+  const { componentEmits } = props.options
   if (componentEmits && componentEmits.clear) {
     componentEmits.clear()
   }

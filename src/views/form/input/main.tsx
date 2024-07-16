@@ -171,18 +171,20 @@ export const schemas:Common.BasicForm[] = [
     componentProps: {
       maxlength: 10
     },
-    componentEmits: {
-      blur: (val) => {
-        console.log('blur', val)
-      },
-      focus (val) {
-        console.log('focus', val)
-      },
-      input (val) {
-        console.log('input', val)
-      },
-      clear () {
-        console.log('clear')
+    componentEmits () {
+      return {
+        blur: (val) => {
+          console.log('blur', val)
+        },
+        focus (val) {
+          console.log('focus', val)
+        },
+        input (val) {
+          console.log('input', val)
+        },
+        clear () {
+          console.log('clear')
+        }
       }
     }
   },
