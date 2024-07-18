@@ -6,9 +6,13 @@
     :disabled="options.disabled"
     :placeholder="options.placeholder"
     :multiple="options.multiple"
+    :remote="options?.async?.remote"
+    :filterable="options?.async?.remote || options.filterable"
+    :remote-method="remoteMethod"
     clearable
     @change="change"
-    @focus="remoteMethod">
+    @focus="focusRemoteMethod"
+  >
     <el-option
       v-for="item in showList"
       :label="item.label"
@@ -28,6 +32,8 @@ export type SelectEmitsType = {
 import { Common } from '@/types'
 import { isArray, isNullOrUndefOrEmpty } from '@/utils/is.ts'
 import type { AsyncType, RenderComponentSlot } from '@/types/form.ts'
+import { debounce } from 'lodash-es'
+import { ElMenu, ElMessage } from 'element-plus'
 interface PropsType {
   modelValue: string | number | string[] | number[];
   options?: {
@@ -38,8 +44,12 @@ interface PropsType {
     async?: AsyncType; // 异步请求及字段取值自定义
     renderComponentSlot?: RenderComponentSlot | RenderComponentSlot[];// 自定义插槽
     componentEmits?: SelectEmitsType; // 暴露出去的事件
+    hiddenOptions?: string[] | number[] | string | number;// 控制隐藏一个或多个选项，可本地数据，可远程数据
+    filterable?: boolean; // 是否开启筛选
   }
 }
+// 远程搜索
+// 输入之后远程添加
 const props = withDefaults(defineProps<PropsType>(), {
   options: () => ({
     multiple: false,
@@ -62,7 +72,6 @@ const innerValue = computed({
     }
   },
   set (newVal) {
-    console.log(newVal, 'newVal222')
     emit('update:modelValue', newVal)
   }
 })
@@ -73,6 +82,9 @@ const showList = ref<Common.List[]>([])
 const flag = ref(true)
 // 控制加载状态
 const loading = ref(false)
+
+// 远程搜索，我加个防抖
+const debounceSearch = debounce(searchData, 300)
 onMounted(() => {
   // 不异步返回的情况下取dataList
   if (!props.options.async) {
@@ -85,14 +97,15 @@ function change (val: string | string[]) {
   innerValue.value = val
   const { componentEmits } = props.options
   if (componentEmits && componentEmits.change) {
-    componentEmits.change(unref(innerValue))
+    componentEmits.change(val)
   }
 }
 
-async function remoteMethod () {
-  if (unref(flag) && props.options.async && props.options.async.url) {
+// 远程加载数据
+async function focusRemoteMethod () {
+  if (unref(flag) && props.options.async && props.options.async.url && !props.options.async.remote) {
     try {
-      const { label = 'label', value = 'value', url, data } = props.options.async
+      const { url, data } = props.options.async
       console.log(url, data)
       loading.value = true
       // 先模拟请求
@@ -100,29 +113,85 @@ async function remoteMethod () {
       // const res: Global.Recordable[] = await http['get'](url, data)
       loading.value = false
       flag.value = false
-      showList.value = res.map(item => {
-        return {
-          label: item[label] || item,
-          value: item[value] ? item[value].toString() : item
-        }
-      })
+      // 处理数据格式
+      dealDataList(res)
     }catch (err) {
       console.log(err)
       showList.value = []
     }
   }
 }
-// 处理下拉数据
-function dealDataList (arr?: Common.List[]) {
-  if (arr?.length) {
-    showList.value = arr.map(item => {
-      return {
-        label: item.label,
-        value: String(item.value),
-        disabled: item.disabled
-      }
-    })
+
+// 输入搜索加载远程数据，还是加一下防抖
+function remoteMethod (query?: string) {
+  if (query) {
+    debounceSearch(query)
+  } else {
+    showList.value = []
   }
+}
+// 输入搜索请求
+async function searchData (query?: string) {
+  if (props.options.async && props.options.async.url && props.options.async.remote) {
+    try {
+      const { url, data, remoteKey } = props.options.async
+      console.log(url, data)
+      const postData = {
+        ...data
+      }
+      if (remoteKey) {
+        postData[remoteKey] = query
+      } else {
+        ElMessage.error('搜索要传remoteKey！！！')
+        return
+      }
+      console.log(postData, 'postData')
+      loading.value = true
+      // 先模拟请求
+      const res = await getMockDataList()
+      // const res: Global.Recordable[] = await http['get'](url, data)
+      loading.value = false
+      // 处理数据格式
+      dealDataList(res)
+    }catch (err) {
+      console.log(err)
+      showList.value = []
+    }
+  }
+
+}
+// 处理下拉数据
+function dealDataList (arr?: Global.Recordable[]) {
+  const { hiddenOptions } = props.options
+  let label = 'label'
+  let value = 'value'
+  if (props.options.async) {
+    label = props.options.async.label || 'label'
+    value = props.options.async.value || 'value'
+  }
+  const listData: Common.List[] = []
+  if (arr?.length) {
+    for (let i = 0; i < arr.length; i++) {
+      // 判断是否需要隐藏一个或多个选项
+      if (hiddenOptions) {
+        if (isArray(hiddenOptions)) {
+          if((hiddenOptions.map(String).find(val => val === String(arr[i][value])))) {
+            continue
+          }
+        } else {
+          if (String(hiddenOptions) === String(arr[i][value])) {
+            continue
+          }
+        }
+      }
+      listData.push({
+        label: !isNullOrUndefOrEmpty(arr[i][label]) ? arr[i][label] : arr[i],
+        value: !isNullOrUndefOrEmpty(arr[i][value]) ? arr[i][value].toString() : arr[i],
+        disabled: arr[i].disabled || false
+      })
+    }
+  }
+  showList.value = listData
 }
 // 模拟接口异步返回数据
 function getMockDataList (): Promise<Global.Recordable[]> {
@@ -132,9 +201,17 @@ function getMockDataList (): Promise<Global.Recordable[]> {
         {
           id: 1,
           name: '张三'
+        },
+        {
+          id: 2,
+          name: '李四'
+        },
+        {
+          id: 3,
+          name: '王五'
         }
       ])
-    }, 1000)
+    }, 300)
   })
 }
 </script>

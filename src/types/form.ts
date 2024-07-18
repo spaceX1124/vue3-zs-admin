@@ -11,7 +11,9 @@ export interface AsyncType {
     label?: string; // 可自定义名称
     value?: string; // 可自定义值
     url?: string; // 接口地址
-    data?: Global.Recordable // 接口参数
+    data?: Global.Recordable; // 接口参数
+    remote?: boolean; // 是否开启远程输入搜索
+    remoteKey?: string; // 远程输入搜索所需key
 }
 type SlotRender = (() => VNode | string) | VNode | string
 /**
@@ -49,7 +51,7 @@ interface BaseFormSchema<T extends ComponentType = any> {
     keyArr?: string[]; //  多值的时候，需要key一一对应
     title?: string; // 名称
     componentProps?: ComponentProps[T]; // 组件props参数
-    componentEmits?: ({ updateSchema }:{updateSchema?: FormActionType['updateSchema']}) => ComponentEmits[T] | ComponentEmits[T]; // 组件执行的一些方法
+    componentEmits?: (({ updateSchema }:{updateSchema?: FormActionType['updateSchema']}) => ComponentEmits[T]) | ComponentEmits[T]; // 组件执行的一些方法
     renderComponentSlot?: RenderComponentSlot | RenderComponentSlot[]; // 组件插槽
     width?: string; // 列宽度，不设置当前列宽就是自适应的,用于表格列宽
     minWidth?: string; // 列最小宽

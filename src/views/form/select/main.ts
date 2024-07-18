@@ -46,10 +46,16 @@ export const schemas: Common.BasicForm[] = [
         change (innerValue) {
           if (innerValue === '1') {
             // 控制key5和key6显示
-            updateSchema({
-              key: 'key5',
-              formHidden: false
-            })
+            updateSchema && updateSchema([
+              {
+                key: 'key5',
+                formHidden: false
+              },
+              {
+                key: 'key6',
+                formHidden: false
+              }
+            ])
           }
         }
       }
@@ -76,5 +82,71 @@ export const schemas: Common.BasicForm[] = [
       { label: '选项3', value: 2 }
     ],
     formHidden: true
+  },
+  {
+    key: 'key7',
+    title: '隐藏一个选项，本地数据',
+    component: 'Select',
+    dataList: [
+      { label: '选项1', value: 0 },
+      { label: '选项2', value: 1 },
+      { label: '选项3', value: 2 }
+    ],
+    componentProps: {
+      hiddenOptions: 1
+    }
+  },
+  {
+    key: 'key7',
+    title: '隐藏多个选项，本地数据',
+    component: 'Select',
+    dataList: [
+      { label: '选项1', value: 0 },
+      { label: '选项2', value: 1 },
+      { label: '选项3', value: 2 }
+    ],
+    componentProps: {
+      hiddenOptions: [0, 2]
+    }
+  },
+  {
+    key: 'key8',
+    title: '隐藏多个选项，远程数据',
+    component: 'Select',
+    componentProps: {
+      hiddenOptions: [1, 3]
+    },
+    async: {
+      label: 'name',
+      value: 'id',
+      url: '/getList',
+      data: { id: 1 }
+    }
+  },
+  {
+    key: 'key9',
+    title: '远程输入加载数据',
+    component: 'Select',
+    async: {
+      label: 'name',
+      value: 'id',
+      url: '/getList',
+      data: { id: 1 }, // 搜索的时候额外的参数，如果没有就不传
+      remote: true,
+      remoteKey: 'searchVal'
+    }
+  },
+  {
+    key: 'key10',
+    title: '本地数据，可筛选',
+    component: 'Select',
+    dataList: [
+      { label: '选项1', value: 0 },
+      { label: '选项2', value: 1 },
+      { label: '选项3', value: 2 }
+    ],
+    componentProps: {
+      filterable: true
+    }
   }
 ]

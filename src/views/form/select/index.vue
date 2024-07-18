@@ -7,7 +7,7 @@
 import { Form, useForm } from '@/components/common/Form'
 import { schemas } from './main.ts'
 const [register] = useForm({
-  schemas: ,
+  schemas: schemas,
   formData: {
     key1: 0,
     key3: 2

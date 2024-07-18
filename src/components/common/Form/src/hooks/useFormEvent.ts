@@ -5,7 +5,7 @@ import { type FormInstance, ElMessage } from 'element-plus'
 import { Common } from '@/types'
 import { isArray, isObj } from '@/utils/is.ts'
 import { isIncludeSimpleComponents } from '@/components/common/Form/src/helper.ts'
-import { deepMerge } from '@/utils/tools.ts'
+import { cloneDeep, deepMerge } from '@/utils/tools.ts'
 
 interface ActionType {
   formModel: Global.Recordable; // 表单数据
@@ -21,14 +21,15 @@ interface ActionType {
  * @param {ActionType} actions
  * */
 export function useFormEvent (formProps: ComputedRef<BasicFormProps>, actions: ActionType) {
+  // 不要结构formProps，导致失去响应性了
   const { schemaRef, formModel, ElFormRef, emit } = actions
   // 设置表单值 {key1:123}，可多个设置
   function setFieldsValue (values: Global.Recordable) {
     if (Object.keys(values).length === 0) {
       return
     }
-    const { schemas = [] } = unref(formProps)
-    schemas.forEach(schema => {
+
+    unref(formProps).schemas?.forEach(schema => {
       const { key } = schema
       const value = get(values, key)
       const hasKey = has(values, key)
@@ -76,19 +77,21 @@ export function useFormEvent (formProps: ComputedRef<BasicFormProps>, actions: A
       return
     }
     const newSchema: Common.BasicForm[] = []
+    const cloneSchemas = cloneDeep(unref(formProps).schemas)
     // 开始合并传进来的字段
-    schemaRef.value.forEach(val => {
+    cloneSchemas?.forEach(val => {
       const curItem = updateSchema.find(item => item.key === val.key)
       if (curItem) {
         // 合并字段对象
         const mergeSchema = deepMerge(val, curItem)
         newSchema.push(mergeSchema)
       } else {
-        newSchema.push(val)
+        newSchema.push({ ...val })
       }
     })
+    console.log(newSchema, 'newSchema')
     // 刷新字段列表
-    schemaRef.value = uniqBy(newSchema, 'field')
+    schemaRef.value = uniqBy(newSchema, 'key')
   }
   return {
     setFieldsValue,

@@ -58,14 +58,15 @@ const getBindingElFormItem = computed(() => {
 
 // 给component绑定一些参数
 const getBindingComponent = computed(() => {
-  let { componentProps = {}, title, component, dataList, async, renderComponentSlot } = props.schema
+  let { componentProps = {}, title, component, dataList, async, renderComponentSlot, componentEmits } = props.schema
   return {
     options: {
       placeholder: `${NO_AUTO_LINK_COMPONENTS.includes(component) ? '请输入' : '请选择'}${title}`,
       ...componentProps,
       dataList,
       async,
-      renderComponentSlot
+      renderComponentSlot,
+      componentEmits
     }
     // schema: props.schema
   }
