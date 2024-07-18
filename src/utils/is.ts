@@ -111,3 +111,4 @@ export function isEmpty<T = any> (val: T): val is T {
 export function isBlob (val: any) {
   return is(val, 'Blob')
 }
+
