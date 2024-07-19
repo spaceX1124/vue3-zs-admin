@@ -1,6 +1,6 @@
 import type { BasicFormProps } from '../types/form.ts'
 import { ComputedRef } from 'vue'
-import { isNullOrUndefOrEmpty } from '@/utils/is.ts'
+import { isBoolean, isNullOrUndefOrEmpty } from '@/utils/is.ts'
 interface ActionType {
   formModel: Global.Recordable
 }
@@ -17,8 +17,10 @@ export function useFormValues (formProps: ComputedRef<BasicFormProps>, actions: 
       const { defaultValue, key } = schema
       // 优先级-> 表单数据>默认值
       formModel[key] = !isNullOrUndefOrEmpty(formData[key]) ?
-        String(formData[key]) :
-        !isNullOrUndefOrEmpty(defaultValue) ? String(defaultValue) : ''
+        isBoolean(formData[key]) ? formData[key] : String(formData[key])
+        : !isNullOrUndefOrEmpty(defaultValue) ?
+          isBoolean(defaultValue) ? defaultValue : String(defaultValue)
+          : ''
     })
   }
   return { initDefault }

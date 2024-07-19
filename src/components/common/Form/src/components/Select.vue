@@ -53,8 +53,7 @@ interface PropsType {
     collapseTagsTooltip?: boolean; // 当鼠标悬停于折叠标签的文本时，是否显示所有选中的标签。 要使用此属性，collapse-tags属性必须设定为 true
   }
 }
-// 远程搜索
-// 输入之后远程添加
+
 const props = withDefaults(defineProps<PropsType>(), {
   options: () => ({
     multiple: false,
@@ -150,7 +149,6 @@ async function searchData (query?: string) {
         ElMessage.error('搜索要传remoteKey！！！')
         return
       }
-      console.log(postData, 'postData')
       loading.value = true
       // 先模拟请求
       const res = await getMockDataList()
@@ -196,9 +194,7 @@ function dealDataList (arr?: Global.Recordable[]) {
             arr[i].disabled = true
           }
         } else {
-          if (String(disabledOptions) === String(arr[i][value])) {
-            arr[i].disabled = true
-          }
+          arr[i].disabled = String(disabledOptions) === String(arr[i][value])
         }
       }
       listData.push({

@@ -19,6 +19,10 @@ const router = createRouter({
             {
               path: 'select',
               component: () => import('@//views/form/select/index.vue')
+            },
+            {
+              path: 'radio',
+              component: () => import('@//views/form/radio/index.vue')
             }
           ]
         }
