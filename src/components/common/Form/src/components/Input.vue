@@ -36,7 +36,7 @@ export type InputEmitsType = {
   clear?: () => void;
 }
 </script>
-<script lang="ts" setup>
+<script lang="ts"œ setup>
 import SlotRender from './slotRender.vue'
 import { checkSlot, getSlot } from '../helper.ts'
 import type { RenderComponentSlot } from '@/types/form.ts'

@@ -9,6 +9,8 @@
     :remote="options?.async?.remote"
     :filterable="options?.async?.remote || options.filterable"
     :remote-method="remoteMethod"
+    :collapse-tags="options?.collapseTags"
+    :collapse-tags-tooltip="options?.collapseTagsTooltip"
     clearable
     @change="change"
     @focus="focusRemoteMethod"
@@ -33,7 +35,7 @@ import { Common } from '@/types'
 import { isArray, isNullOrUndefOrEmpty } from '@/utils/is.ts'
 import type { AsyncType, RenderComponentSlot } from '@/types/form.ts'
 import { debounce } from 'lodash-es'
-import { ElMenu, ElMessage } from 'element-plus'
+import { ElMessage } from 'element-plus'
 interface PropsType {
   modelValue: string | number | string[] | number[];
   options?: {
@@ -45,7 +47,10 @@ interface PropsType {
     renderComponentSlot?: RenderComponentSlot | RenderComponentSlot[];// 自定义插槽
     componentEmits?: SelectEmitsType; // 暴露出去的事件
     hiddenOptions?: string[] | number[] | string | number;// 控制隐藏一个或多个选项，可本地数据，可远程数据
+    disabledOptions?: string[] | number[] | string | number; // 控制一个或多个选项不可选，可本地数据，可远程数据
     filterable?: boolean; // 是否开启筛选
+    collapseTags?: boolean; // 多选时是否将选中值按文字的形式展示
+    collapseTagsTooltip?: boolean; // 当鼠标悬停于折叠标签的文本时，是否显示所有选中的标签。 要使用此属性，collapse-tags属性必须设定为 true
   }
 }
 // 远程搜索
@@ -162,7 +167,7 @@ async function searchData (query?: string) {
 }
 // 处理下拉数据
 function dealDataList (arr?: Global.Recordable[]) {
-  const { hiddenOptions } = props.options
+  const { hiddenOptions, disabledOptions } = props.options
   let label = 'label'
   let value = 'value'
   if (props.options.async) {
@@ -181,6 +186,18 @@ function dealDataList (arr?: Global.Recordable[]) {
         } else {
           if (String(hiddenOptions) === String(arr[i][value])) {
             continue
+          }
+        }
+      }
+      // 判断是否禁用当前选项
+      if (disabledOptions) {
+        if (isArray(disabledOptions)) {
+          if((disabledOptions.map(String).find(val => val === String(arr[i][value])))) {
+            arr[i].disabled = true
+          }
+        } else {
+          if (String(disabledOptions) === String(arr[i][value])) {
+            arr[i].disabled = true
           }
         }
       }

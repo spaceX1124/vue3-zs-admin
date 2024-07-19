@@ -48,11 +48,11 @@ const getBindingElCol = computed(() => {
 
 // 给el-form-item绑定一些参数
 const getBindingElFormItem = computed(() => {
-  const { title, key } = props.schema
+  const { title, key, component } = props.schema
   return {
-    label: title,
+    label: component !== 'BasicTitle' ? title : '',
     rules: getRules(),
-    prop: key
+    prop: key // @todo 看到这个突然想起来，如果表单项中嵌套表单项（表单项可能是不同的，也可能是一个数组循环渲染），记得写
   }
 })
 
@@ -67,8 +67,8 @@ const getBindingComponent = computed(() => {
       async,
       renderComponentSlot,
       componentEmits
-    }
-    // schema: props.schema
+    },
+    schema: props.schema
   }
 })
 

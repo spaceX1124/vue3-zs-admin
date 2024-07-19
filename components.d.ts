@@ -27,6 +27,7 @@ declare module 'vue' {
     FormAction: typeof import('./src/components/common/Form/src/components/FormAction.vue')['default']
     FormItem: typeof import('./src/components/common/Form/src/components/FormItem.vue')['default']
     Input: typeof import('./src/components/common/Form/src/components/Input.vue')['default']
+    Radio: typeof import('./src/components/common/Form/src/components/Radio.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     Select: typeof import('./src/components/common/Form/src/components/Select.vue')['default']

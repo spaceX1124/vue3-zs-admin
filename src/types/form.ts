@@ -68,7 +68,7 @@ interface BaseFormSchema<T extends ComponentType = any> {
     colSpan?: ColEx;// 字段栅格布局样式，用于表单布局
 }
 interface ComponentFormSchema<T extends ComponentType = any> extends BaseFormSchema<T> {
-    component?: T;
+    component: T;
 }
 
 type ComponentFormSchemaType<T extends ComponentType = ComponentType> = T extends any
