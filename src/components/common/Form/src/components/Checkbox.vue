@@ -1,17 +1,29 @@
 <template>
-  <el-checkbox-group
-    :model-value="innerValue"
-    :disabled="options.disabled"
-    @change="change"
-  >
+  <!-- 当在父组件中给该子组件传参的时候，如果子组件没有接收，默认会透传，如果子组件不是唯一的根标签，就会报警告-->
+  <div>
     <el-checkbox
-      v-for="item in showList"
-      :label="item.label"
-      :value="item.value"
-      :key="item.value"
-      :disabled="item.disabled"
-    />
-  </el-checkbox-group>
+      v-if="options.checkAll"
+      v-model="checkAll"
+      :indeterminate="isIndeterminate"
+      @change="handleCheckAllChange"
+    >
+      全选
+    </el-checkbox>
+    <el-checkbox-group
+      style="width: 100%"
+      :model-value="innerValue"
+      :disabled="options.disabled"
+      @change="change"
+    >
+      <el-checkbox
+        v-for="item in showList"
+        :label="item.label"
+        :value="item.value"
+        :key="item.value"
+        :disabled="item.disabled"
+      />
+    </el-checkbox-group>
+  </div>
 </template>
 <script lang="ts">
 export type CheckboxEmitsType = {
@@ -33,6 +45,7 @@ interface PropsType {
     hiddenOptions?: string[] | number[] | string | number;// 控制隐藏一个或多个选项，可本地数据，可远程数据
     disabledOptions?: string[] | number[] | string | number; // 控制一个或多个选项不可选，可本地数据，可远程数据
     valIsArray?: boolean; // 抛出去的值是数组还是字符串
+    checkAll?: boolean; // 是否显示全选
   }
 }
 
@@ -59,10 +72,14 @@ const innerValue = computed({
     if (!props.options.valIsArray) {
       val = newVal.join(',')
     } else {
-      val = newVal
+      val = newVal.sort()
     }
     emit('update:modelValue', val)
   }
+})
+
+watch(() => innerValue.value, () => {
+  props.options.checkAll && handleIsIndeterminate()
 })
 
 // 要展示的list数据
@@ -80,6 +97,7 @@ onMounted(() => {
 // 值只可能是字符串或者字符串数组了，因为下拉数据统一处理成字符串了
 function change (val: any) {
   innerValue.value = val
+
   const { componentEmits } = props.options
   if (componentEmits && componentEmits.change) {
     componentEmits.change(val)
@@ -97,6 +115,7 @@ async function remoteMethod () {
       // const res: Global.Recordable[] = await http['get'](url, data)
       // 处理数据格式
       dealDataList(res)
+      props.options.checkAll && handleIsIndeterminate()
     }catch (err) {
       console.log(err)
       showList.value = []
@@ -167,5 +186,19 @@ function getMockDataList (): Promise<Global.Recordable[]> {
       ])
     }, 300)
   })
+}
+
+// 全选
+const checkAll = ref(false)
+const isIndeterminate = ref(false)
+function handleCheckAllChange (val: any) {
+  innerValue.value = val ? showList.value.map(item => item.value) : []
+  isIndeterminate.value = false
+}
+// 处理半选
+function handleIsIndeterminate () {
+  const checkedCount = innerValue.value.length
+  checkAll.value = checkedCount === showList.value.length
+  isIndeterminate.value = checkedCount > 0 && checkedCount < showList.value.length
 }
 </script>

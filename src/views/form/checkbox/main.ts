@@ -3,13 +3,16 @@ import { Common } from '@/types'
 export const schemas: Common.BasicForm[] = [
   {
     key: 'key1',
-    title: '复选框-本地数据',
+    title: '复选框-本地数据，展示全选',
     component: 'Checkbox',
     dataList: [
       { label: '选项1', value: 0 },
       { label: '选项2', value: 1 },
       { label: '选项3', value: 2 }
-    ]
+    ],
+    componentProps: {
+      checkAll: true
+    }
   },
   {
     key: 'key2',
@@ -88,7 +91,13 @@ export const schemas: Common.BasicForm[] = [
     dataList: [
       { label: '选项1', value: 0 },
       { label: '选项2', value: 1 },
-      { label: '选项3', value: 2 }
+      { label: '选项3', value: 2 },
+      { label: '选项11', value: 3 },
+      { label: '选项22', value: 4 },
+      { label: '选项33', value: 5 },
+      { label: '选项111', value: 6 },
+      { label: '选项222', value: 7 },
+      { label: '选项333', value: 28 }
     ],
     required: true
   }

@@ -9,9 +9,8 @@ import { schemas } from './main.ts'
 const [register] = useForm({
   schemas: unref(schemas),
   formData: {
-    key1: 0,
-    key2: '2',
-    key5: false
+    key1: [0, 1],
+    key2: '2'
   }
 })
 </script>

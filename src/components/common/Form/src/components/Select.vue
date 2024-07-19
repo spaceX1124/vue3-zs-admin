@@ -82,11 +82,11 @@ const innerValue = computed({
   set (newVal) {
     let val
     // 如果外部需要接受字符串
-    if (props.options.multiple) {
-      if (!props.options.valIsArray && isArray(newVal)) {
+    if (props.options.multiple && isArray(newVal)) {
+      if (!props.options.valIsArray) {
         val = newVal.join(',')
       } else {
-        val = newVal
+        val = newVal.sort()
       }
     } else {
       val = newVal
