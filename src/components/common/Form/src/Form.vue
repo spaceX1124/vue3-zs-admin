@@ -40,7 +40,6 @@ const emit = defineEmits<EmitEvent>()
 // 当前外部使用组件时通过useForm传入的一些参数（BasicTableProps）
 let innerProps = ref<BasicFormProps>({})
 let getProps = computed(() => {
-  console.log('变了妈妈', innerProps)
   return { ...unref(innerProps) }
 })
 
@@ -82,14 +81,11 @@ const { setFieldsValue, submit, updateSchema } = useFormEvent(getProps, {
   ElFormRef,
   emit,
   schemaRef
-
 })
 
 // 设置外部传递进来的参数
 function setProps (propsData: BasicFormProps) {
-  console.log(propsData, 'propsData')
   innerProps.value = deepMerge(unref(innerProps), propsData)
-  console.log(innerProps)
 }
 
 const formAction: FormActionType = {

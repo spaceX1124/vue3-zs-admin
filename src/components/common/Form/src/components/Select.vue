@@ -56,10 +56,11 @@ interface PropsType {
 }
 
 const props = withDefaults(defineProps<PropsType>(), {
+  // 设置默认值不会生效，因为外面已经设置了options的值了，说明已经有值了
   options: () => ({
-    multiple: false,
-    clearable: true,
-    valIsArray: true
+    // multiple: false,
+    // clearable: true,
+    // valIsArray: true
   })
 })
 
@@ -79,7 +80,6 @@ const innerValue = computed({
     }
   },
   set (newVal) {
-    console.log(props.options)
     let val
     // 如果外部需要接受字符串
     if (props.options.multiple) {

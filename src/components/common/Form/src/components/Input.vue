@@ -61,8 +61,8 @@ interface PropsType {
 }
 const props = withDefaults(defineProps<PropsType>(), {
   options: () => ({
-    type: 'text',
-    disabled: false
+    // type: 'text',
+    // disabled: false
   })
 })
 const emit = defineEmits(['update:modelValue', 'blur'])

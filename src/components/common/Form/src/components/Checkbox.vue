@@ -38,7 +38,7 @@ interface PropsType {
 
 const props = withDefaults(defineProps<PropsType>(), {
   options: () => ({
-    valIsArray: true
+    // valIsArray: true
   })
 })
 

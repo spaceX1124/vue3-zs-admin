@@ -35,9 +35,7 @@ interface PropsType {
 }
 
 const props = withDefaults(defineProps<PropsType>(), {
-  options: () => ({
-
-  })
+  options: () => ({})
 })
 
 const emit = defineEmits(['update:modelValue'])
