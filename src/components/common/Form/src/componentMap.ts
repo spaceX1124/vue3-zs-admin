@@ -3,6 +3,7 @@ import { Component } from 'vue'
 import Input from './components/Input.vue'
 import Select from './components/Select.vue'
 import Radio from './components/Radio.vue'
+import Checkbox from './components/Checkbox.vue'
 import BasicTitle from './components/BasicTitle.vue'
 import type { ComponentType } from './types/index.ts'
 
@@ -10,6 +11,7 @@ const componentMap: Map<ComponentType, Component> = new Map()
 componentMap.set('Input', Input)
 componentMap.set('Select', Select)
 componentMap.set('Radio', Radio)
+componentMap.set('Checkbox', Checkbox)
 componentMap.set('BasicTitle', BasicTitle)
 
 export { componentMap }

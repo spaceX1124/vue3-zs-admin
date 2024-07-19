@@ -1,64 +1,43 @@
 <template>
-  <el-select
+  <el-checkbox-group
     :model-value="innerValue"
-    :loading="loading"
-    loading-text="加载中"
     :disabled="options.disabled"
-    :placeholder="options.placeholder"
-    :multiple="options.multiple"
-    :remote="options?.async?.remote"
-    :filterable="options?.async?.remote || options.filterable"
-    :remote-method="remoteMethod"
-    :collapse-tags="options?.collapseTags"
-    :collapse-tags-tooltip="options?.collapseTagsTooltip"
-    clearable
     @change="change"
-    @focus="focusRemoteMethod"
   >
-    <el-option
+    <el-checkbox
       v-for="item in showList"
       :label="item.label"
       :value="item.value"
       :key="item.value"
       :disabled="item.disabled"
     />
-  </el-select>
+  </el-checkbox-group>
 </template>
 <script lang="ts">
-export type SelectEmitsType = {
-  clear?: () => void;
+export type CheckboxEmitsType = {
   change?: (innerValue?: string | string[]) => void;
 }
 </script>
 <script lang="ts" setup>
 import { Common } from '@/types'
 import { isArray, isNullOrUndefOrEmpty } from '@/utils/is.ts'
-import type { AsyncType, RenderComponentSlot } from '@/types/form.ts'
-import { debounce } from 'lodash-es'
-import { ElMessage } from 'element-plus'
+import type { AsyncType } from '@/types/form.ts'
+
 interface PropsType {
   modelValue: string | number | string[] | number[];
   options?: {
-    multiple?: boolean; // 是否多选
     disabled?: boolean; // 是否置灰
-    placeholder?: string;
     dataList?: Common.List[];// 数据列表
     async?: AsyncType; // 异步请求及字段取值自定义
-    renderComponentSlot?: RenderComponentSlot | RenderComponentSlot[];// 自定义插槽
-    componentEmits?: SelectEmitsType; // 暴露出去的事件
+    componentEmits?: CheckboxEmitsType; // 暴露出去的事件
     hiddenOptions?: string[] | number[] | string | number;// 控制隐藏一个或多个选项，可本地数据，可远程数据
     disabledOptions?: string[] | number[] | string | number; // 控制一个或多个选项不可选，可本地数据，可远程数据
-    filterable?: boolean; // 是否开启筛选
-    collapseTags?: boolean; // 多选时是否将选中值按文字的形式展示
-    collapseTagsTooltip?: boolean; // 当鼠标悬停于折叠标签的文本时，是否显示所有选中的标签。 要使用此属性，collapse-tags属性必须设定为 true
     valIsArray?: boolean; // 抛出去的值是数组还是字符串
   }
 }
 
 const props = withDefaults(defineProps<PropsType>(), {
   options: () => ({
-    multiple: false,
-    clearable: true,
     valIsArray: true
   })
 })
@@ -66,28 +45,19 @@ const props = withDefaults(defineProps<PropsType>(), {
 const emit = defineEmits(['update:modelValue'])
 const innerValue = computed({
   get () {
-    // 根据多选和单选处理值的类型
-    if(isNullOrUndefOrEmpty(props.modelValue)) return props.options.multiple ? [] : ''
-    if (props.options.multiple) {// 多选
-      if (isArray(props.modelValue)) {
-        return props.modelValue.map(String)
-      }
-      const valueAsString = String(props.modelValue)
-      return valueAsString.includes(',') ? valueAsString.split(',') : [valueAsString]
-    } else { // 单选
-      return String(props.modelValue)
+    // 统一转成数组
+    if(isNullOrUndefOrEmpty(props.modelValue)) return []
+    if (isArray(props.modelValue)) {
+      return props.modelValue.map(String)
     }
+    const valueAsString = String(props.modelValue)
+    return valueAsString.includes(',') ? valueAsString.split(',') : [valueAsString]
   },
   set (newVal) {
-    console.log(props.options)
     let val
     // 如果外部需要接受字符串
-    if (props.options.multiple) {
-      if (!props.options.valIsArray && isArray(newVal)) {
-        val = newVal.join(',')
-      } else {
-        val = newVal
-      }
+    if (!props.options.valIsArray) {
+      val = newVal.join(',')
     } else {
       val = newVal
     }
@@ -97,22 +67,18 @@ const innerValue = computed({
 
 // 要展示的list数据
 const showList = ref<Common.List[]>([])
-// 控制接口请求只请求一次
-const flag = ref(true)
-// 控制加载状态
-const loading = ref(false)
 
-// 远程搜索，我加个防抖
-const debounceSearch = debounce(searchData, 300)
 onMounted(() => {
   // 不异步返回的情况下取dataList
   if (!props.options.async) {
     dealDataList(props.options.dataList)
+  } else {
+    remoteMethod()
   }
 })
 
 // 值只可能是字符串或者字符串数组了，因为下拉数据统一处理成字符串了
-function change (val: string | string[]) {
+function change (val: any) {
   innerValue.value = val
   const { componentEmits } = props.options
   if (componentEmits && componentEmits.change) {
@@ -121,17 +87,14 @@ function change (val: string | string[]) {
 }
 
 // 远程加载数据
-async function focusRemoteMethod () {
-  if (unref(flag) && props.options.async && props.options.async.url && !props.options.async.remote) {
+async function remoteMethod () {
+  if (props.options.async && props.options.async.url && !props.options.async.remote) {
     try {
       const { url, data } = props.options.async
       console.log(url, data)
-      loading.value = true
       // 先模拟请求
       const res = await getMockDataList()
       // const res: Global.Recordable[] = await http['get'](url, data)
-      loading.value = false
-      flag.value = false
       // 处理数据格式
       dealDataList(res)
     }catch (err) {
@@ -141,43 +104,6 @@ async function focusRemoteMethod () {
   }
 }
 
-// 输入搜索加载远程数据，还是加一下防抖
-function remoteMethod (query?: string) {
-  if (query) {
-    debounceSearch(query)
-  } else {
-    showList.value = []
-  }
-}
-// 输入搜索请求
-async function searchData (query?: string) {
-  if (props.options.async && props.options.async.url && props.options.async.remote) {
-    try {
-      const { url, data, remoteKey } = props.options.async
-      console.log(url, data)
-      const postData = {
-        ...data
-      }
-      if (remoteKey) {
-        postData[remoteKey] = query
-      } else {
-        ElMessage.error('搜索要传remoteKey！！！')
-        return
-      }
-      loading.value = true
-      // 先模拟请求
-      const res = await getMockDataList()
-      // const res: Global.Recordable[] = await http['get'](url, data)
-      loading.value = false
-      // 处理数据格式
-      dealDataList(res)
-    }catch (err) {
-      console.log(err)
-      showList.value = []
-    }
-  }
-
-}
 // 处理下拉数据
 function dealDataList (arr?: Global.Recordable[]) {
   const { hiddenOptions, disabledOptions } = props.options

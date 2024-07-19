@@ -181,6 +181,35 @@ export const schemas: Common.BasicForm[] = [
     }
   },
   {
+    key: 'key231',
+    title: '我要的值是字符串',
+    component: 'Select',
+    async: {
+      label: 'name',
+      value: 'id',
+      url: '/getList',
+      data: { id: 1 }
+    },
+    componentProps: {
+      multiple: true,
+      valIsArray: false
+    }
+  },
+  {
+    key: 'key2321',
+    title: '我要的值是数组',
+    component: 'Select',
+    async: {
+      label: 'name',
+      value: 'id',
+      url: '/getList',
+      data: { id: 1 }
+    },
+    componentProps: {
+      multiple: true
+    }
+  },
+  {
     key: 'key111',
     title: '本地数据下拉',
     component: 'Select',

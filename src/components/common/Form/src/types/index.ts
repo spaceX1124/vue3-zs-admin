@@ -2,6 +2,7 @@ import type { Component, VNodeProps } from 'vue'
 import { InputEmitsType } from '../components/Input.vue'
 import { SelectEmitsType } from '../components/Select.vue'
 import { RadioEmitsType } from '../components/Radio.vue'
+import { CheckboxEmitsType } from '../components/Checkbox.vue'
 
 type ExtractPropTypes<T extends Component> = T extends new (...args: any) => any
     ? Omit<InstanceType<T>['$props']['options'], keyof VNodeProps>
@@ -17,6 +18,7 @@ export interface ComponentProps {
     Input: ExtractPropTypes<typeof import('../components/Input.vue')['default']>;
     Select: ExtractPropTypes<typeof import('../components/Select.vue')['default']>;
     Radio: ExtractPropTypes<typeof import('../components/Radio.vue')['default']>;
+    Checkbox: ExtractPropTypes<typeof import('../components/Checkbox.vue')['default']>;
     BasicTitle: ExtractPropTypes<typeof import('../components/BasicTitle.vue')['default']>;
 }
 
@@ -24,6 +26,7 @@ export interface ComponentEmits {
     Input: InputEmitsType;
     Select: SelectEmitsType;
     Radio: RadioEmitsType;
+    Checkbox: CheckboxEmitsType;
     BasicTitle: Object
 }
 

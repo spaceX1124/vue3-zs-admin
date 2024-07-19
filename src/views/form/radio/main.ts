@@ -10,6 +10,7 @@ export const schemas: Common.BasicForm[] = [
       { label: '选项2', value: 1 },
       { label: '选项3', value: 2 }
     ]
+
   },
   {
     key: 'key2',
@@ -65,6 +66,7 @@ export const schemas: Common.BasicForm[] = [
     ],
     componentProps: {
       hiddenOptions: ['1']
-    }
+    },
+    required: true
   }
 ]

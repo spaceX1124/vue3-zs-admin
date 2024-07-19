@@ -65,7 +65,7 @@ onMounted(() => {
   }
 })
 
-function change (val?: string | boolean) {
+function change (val: any) {
   innerValue.value = val
   const { componentEmits } = props.options
   if (componentEmits && componentEmits.change) {
