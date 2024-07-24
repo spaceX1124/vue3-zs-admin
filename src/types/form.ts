@@ -10,6 +10,7 @@ import { Common } from './index'
 export interface AsyncType {
     label?: string; // 可自定义名称
     value?: string; // 可自定义值
+    children?: string; // 级联的时候可用
     url?: string; // 接口地址
     data?: Global.Recordable; // 接口参数
     remote?: boolean; // 是否开启远程输入搜索
@@ -33,7 +34,7 @@ interface DynamicRules {
 /**
  * 栅格样式类型
  * */
-interface ColEx {
+export interface ColEx {
     span?: number; // 栅格占据的列数
     offset?: number; // 栅格左侧的间隔格数
     xs?: number; // <768px
@@ -47,7 +48,7 @@ interface ColEx {
  * 表格表单基础数据格式
  * */
 interface BaseFormSchema<T extends ComponentType = any> {
-    key: string; // （回显表格数据所需key | 表单绑定所需要的key）
+    key?: string; // （回显表格数据所需key | 表单绑定所需要的key）
     keyArr?: string[]; //  多值的时候，需要key一一对应
     title?: string; // 名称
     componentProps?: ComponentProps[T]; // 组件props参数
@@ -65,7 +66,7 @@ interface BaseFormSchema<T extends ComponentType = any> {
     dynamicRules?:(params?: DynamicRules) => FormItemRule[]; // 自定义校验规则
     defaultValue?: string | string[] // 默认值
     required?: boolean; // 是否必填
-    colSpan?: ColEx;// 字段栅格布局样式，用于表单布局
+    colSpan?: number | ColEx;// 字段栅格布局样式，用于表单布局
 }
 interface ComponentFormSchema<T extends ComponentType = any> extends BaseFormSchema<T> {
     component: T;

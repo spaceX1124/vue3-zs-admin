@@ -11,7 +11,8 @@ import { componentMap } from '../componentMap.ts'
 import { type FormItemRule } from 'element-plus'
 import { NO_AUTO_LINK_COMPONENTS } from '../helper.ts'
 import { Common } from '@/types'
-import { isNullOrUndefOrEmpty } from '@/utils/is.ts'
+import { isNullOrUndefOrEmpty, isNumber, isObj } from '@/utils/is.ts'
+import { ColEx } from '@/types/form.ts'
 
 interface PropsType {
   schema: Common.BasicForm; // 当前字段配置信息
@@ -25,11 +26,11 @@ const modelValue = computed({
   get () {
     const { key } = props.schema
     // 一开始取不到，就返回''
-    return !isNullOrUndefOrEmpty(props.formModel[key]) ? props.formModel[key] : ''
+    return key && !isNullOrUndefOrEmpty(props.formModel[key]) ? props.formModel[key] : ''
   },
   set (newVal) {
     const { key } = props.schema
-    props.setFormModelValue(key, newVal)
+    key && props.setFormModelValue(key, newVal)
   }
 })
 // 当前组件名称
@@ -38,9 +39,24 @@ const component = computed(() => {
 })
 // 给el-col绑定一些参数
 const getBindingElCol = computed(() => {
-  const { colSpan = {} } = props.schema
-  const { baseColspan = { span: 12 } } = props.formProps
-  const colProps = { ...baseColspan, ...colSpan }
+  // 字段的布局配置
+  const { colSpan } = props.schema
+  // 表单的布局配置
+  const { baseColspan } = props.formProps
+  let colProps: ColEx = { span: 12 }
+  if (isNumber(baseColspan)) {
+    colProps.span = baseColspan
+  }
+  if (isObj(baseColspan)) {
+    colProps = { ...baseColspan }
+  }
+  if (isNumber(colSpan)) {
+    colProps.span = colSpan
+  }
+  if (isObj(colSpan)) {
+    colProps = { ...colProps, ...colSpan }
+  }
+
   return {
     ...colProps
   }

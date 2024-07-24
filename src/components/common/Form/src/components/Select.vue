@@ -181,12 +181,8 @@ async function searchData (query?: string) {
 // 处理下拉数据
 function dealDataList (arr?: Global.Recordable[]) {
   const { hiddenOptions, disabledOptions } = props.options
-  let label = 'label'
-  let value = 'value'
-  if (props.options.async) {
-    label = props.options.async.label || 'label'
-    value = props.options.async.value || 'value'
-  }
+  let label = props.options?.async?.label || 'label'
+  let value = props.options?.async?.value || 'value'
   const listData: Common.List[] = []
   if (arr?.length) {
     for (let i = 0; i < arr.length; i++) {

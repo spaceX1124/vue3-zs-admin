@@ -27,6 +27,10 @@ const router = createRouter({
             {
               path: 'checkbox',
               component: () => import('@//views/form/checkbox/index.vue')
+            },
+            {
+              path: 'cascader',
+              component: () => import('@//views/form/cascader/index.vue')
             }
           ]
         }

@@ -9,6 +9,7 @@
     :showWordLimit="options.showWordLimit"
     :showPassword="options.showPassword"
     :autosize="options.autosize"
+    :autofocus="options.autofocus"
     @blur="blur"
     @focus="focus"
     clearable

@@ -1,5 +1,5 @@
 <template>
-  <div class="select-content">
+  <div class="form-content">
     <Form @register="register" />
   </div>
 </template>
@@ -7,16 +7,12 @@
 import { Form, useForm } from '@/components/common/Form'
 import { schemas } from './main.ts'
 const [register] = useForm({
-  schemas: schemas,
-  formData: {
-    key1: 0,
-    key3: 2
-  },
+  schemas: unref(schemas),
   baseColspan: 8
 })
 </script>
 <style lang="scss" scoped>
-.select-content {
+.form-content {
   padding: 20px;
 }
 </style>

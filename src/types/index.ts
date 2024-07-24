@@ -11,5 +11,7 @@ export namespace Common {
         label: string;
         value: any;
         disabled?: boolean;
+        children?: List[];
+        [key: string]: any;
     }
 }

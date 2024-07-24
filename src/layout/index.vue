@@ -8,6 +8,7 @@
           <el-menu-item index="/form/select">select</el-menu-item>
           <el-menu-item index="/form/radio">radio</el-menu-item>
           <el-menu-item index="/form/checkbox">checkbox</el-menu-item>
+          <el-menu-item index="/form/cascader">cascader</el-menu-item>
         </el-sub-menu>
       </el-menu>
     </el-aside>

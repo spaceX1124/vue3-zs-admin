@@ -18,7 +18,7 @@ export interface ColEx {
 export interface BasicFormProps {
     schemas?:Common.BasicForm[], // 表单项数据
     labelPosition?: 'left' | 'top' | 'right';// 表单标签位置
-    baseColspan?: ColEx; // 整个表单的栅格布局
+    baseColspan?: number | ColEx; // 整个表单的栅格布局
     gutter?: number; // 栅格间隔
     globDisabled?: boolean; // 整个表单是否置灰
     formData?: Global.Recordable; // 表单数据，如编辑时，或者搜索时加了缓存，进来的时候要直接回显

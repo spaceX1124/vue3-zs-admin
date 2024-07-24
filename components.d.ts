@@ -8,10 +8,12 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     BasicTitle: typeof import('./src/components/common/Form/src/components/BasicTitle.vue')['default']
+    Cascader: typeof import('./src/components/common/Form/src/components/Cascader.vue')['default']
     Checkbox: typeof import('./src/components/common/Form/src/components/Checkbox.vue')['default']
     Date: typeof import('./src/components/common/Form/src/components/Date.vue')['default']
     ElAside: typeof import('element-plus/es')['ElAside']
     ElButton: typeof import('element-plus/es')['ElButton']
+    ElCascader: typeof import('element-plus/es')['ElCascader']
     ElCheckbox: typeof import('element-plus/es')['ElCheckbox']
     ElCheckboxGroup: typeof import('element-plus/es')['ElCheckboxGroup']
     ElCol: typeof import('element-plus/es')['ElCol']

@@ -11,6 +11,9 @@ const [register] = useForm({
   formData: {
     key1: '哈哈',
     key2: '解决'
+  },
+  baseColspan: {
+    span: 4
   }
 })
 </script>

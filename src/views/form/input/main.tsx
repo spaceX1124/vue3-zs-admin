@@ -4,9 +4,15 @@ import { Common } from '@/types'
 
 export const schemas:Common.BasicForm[] = [
   {
-    key: 'key1',
     title: '单行文本',
-    component: 'Input'
+    component: 'BasicTitle',
+    colSpan: 24
+  },
+  {
+    key: 'key1',
+    title: '不限制',
+    component: 'Input',
+    colSpan: 8
   },
   {
     key: 'key2',
@@ -18,7 +24,7 @@ export const schemas:Common.BasicForm[] = [
   },
   {
     key: 'key3',
-    title: '只能输入整数',
+    title: '整数',
     component: 'Input',
     componentProps: {
       integer: true
@@ -26,7 +32,7 @@ export const schemas:Common.BasicForm[] = [
   },
   {
     key: 'key4',
-    title: '最多输入3位小数',
+    title: '3位小数',
     component: 'Input',
     componentProps: {
       decimal: 3
@@ -188,6 +194,31 @@ export const schemas:Common.BasicForm[] = [
       }
     }
   },
+
+  {
+    key: 'key15',
+    title: '密码',
+    component: 'Input',
+    componentProps: {
+      showPassword: true
+    }
+  },
+
+  {
+    key: 'key17',
+    title: '自动聚焦',
+    component: 'Input',
+    componentProps: {
+      autofocus: true
+    }
+  },
+  {
+    title: '多行文本',
+    component: 'BasicTitle',
+    colSpan: {
+      span: 24
+    }
+  },
   {
     key: 'key14',
     title: '多行文本',
@@ -196,14 +227,6 @@ export const schemas:Common.BasicForm[] = [
       type: 'textarea',
       maxlength: 5,
       showWordLimit: true
-    }
-  },
-  {
-    key: 'key15',
-    title: '密码',
-    component: 'Input',
-    componentProps: {
-      showPassword: true
     }
   },
   {
@@ -222,10 +245,10 @@ export const schemas:Common.BasicForm[] = [
   },
   {
     key: 'key17',
-    title: '自动聚焦',
+    title: '不显示字数统计',
     component: 'Input',
     componentProps: {
-      autofocus: true
+      type: 'textarea'
     }
   }
 ]

@@ -1,5 +1,5 @@
 import { cloneDeep as lodashCloneDeep, mergeWith, unionWith, isEqual, intersectionWith } from 'lodash-es'
-import { isArray, isObj } from '@/utils/is'
+import { isArray, isObj, isFunc, isBoolean } from '@/utils/is'
 /**
  * 深拷贝
  * */
@@ -51,4 +51,36 @@ export function deepMerge<T extends object | null | undefined, U extends object 
     }
     return undefined
   })
+}
+
+/**
+ * 通用递归
+ * */
+export const recursion = (list: Global.Recordable[], fn: Global.Fn, children = 'children') => {
+  const recursionFn = (arr: Global.Recordable[], parent?: Global.Recordable) => {
+    let interruptFlag = false // 中断递归标志
+    for (const item of arr) {
+      interruptFlag = isFunc(fn) ? fn(item, parent) : false
+      if (isBoolean(interruptFlag) && interruptFlag) { // 当函数返回布尔值且为true时,中断递归
+        return true
+      } else {
+        interruptFlag = recursionFn(item[children] || [], item) || false
+        if (isBoolean(interruptFlag) && interruptFlag) { // 当函数返回布尔值且为true时,中断递归
+          return true
+        }
+      }
+    }
+  }
+  recursionFn(list)
+}
+
+/**
+ * 数组扁平化
+ * */
+export function getFlatArr (arr: Global.Recordable[], children = 'children'): Global.Recordable[] {
+  return arr.reduce((pre: Global.Recordable[], current: Global.Recordable) => {
+    let flatArr = [...pre, current]
+    if (current[children]) flatArr = [...flatArr, ...getFlatArr(current[children])]
+    return flatArr
+  }, [])
 }
