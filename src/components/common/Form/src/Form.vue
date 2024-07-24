@@ -31,7 +31,7 @@ const ElFormRef = ref<FormInstance | null>(null)
 const schemaRef = ref<Common.BasicForm[]>([])
 
 // 修改表单中的值
-function setFormModelValue (key: string, value: any) {
+function setFormModelValue (key: string, value: any): void {
   formModel[key] = value
 }
 
@@ -80,7 +80,8 @@ const { setFieldsValue, submit, updateSchema } = useFormEvent(getProps, {
   formModel,
   ElFormRef,
   emit,
-  schemaRef
+  schemaRef,
+  showSchemas
 })
 
 // 设置外部传递进来的参数

@@ -14,23 +14,27 @@ const router = createRouter({
           children: [
             {
               path: 'input',
-              component: () => import('@//views/form/input/index.vue')
+              component: () => import('@/views/form/input/index.vue')
             },
             {
               path: 'select',
-              component: () => import('@//views/form/select/index.vue')
+              component: () => import('@/views/form/select/index.vue')
             },
             {
               path: 'radio',
-              component: () => import('@//views/form/radio/index.vue')
+              component: () => import('@/views/form/radio/index.vue')
             },
             {
               path: 'checkbox',
-              component: () => import('@//views/form/checkbox/index.vue')
+              component: () => import('@/views/form/checkbox/index.vue')
             },
             {
               path: 'cascader',
-              component: () => import('@//views/form/cascader/index.vue')
+              component: () => import('@/views/form/cascader/index.vue')
+            },
+            {
+              path: 'date',
+              component: () => import('@/views/form/date/index.vue')
             }
           ]
         }

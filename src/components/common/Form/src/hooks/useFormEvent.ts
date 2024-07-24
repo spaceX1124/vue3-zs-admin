@@ -3,15 +3,16 @@ import { BasicFormProps, EmitEvent } from '../types/form.ts'
 import { get, has, uniqBy } from 'lodash-es'
 import { type FormInstance, ElMessage } from 'element-plus'
 import { Common } from '@/types'
-import { isArray, isObj } from '@/utils/is.ts'
+import { isArray, isNullOrUndefOrEmpty, isObj, isString } from '@/utils/is.ts'
 import { isIncludeSimpleComponents } from '@/components/common/Form/src/helper.ts'
 import { cloneDeep, deepMerge } from '@/utils/tools.ts'
 
 interface ActionType {
   formModel: Global.Recordable; // 表单数据
   ElFormRef: Ref<FormInstance | null>; // 表单ref实例
-  emit: EmitEvent
-  schemaRef: Ref<Common.BasicForm[]>
+  emit: EmitEvent;
+  schemaRef: Ref<Common.BasicForm[]>;
+  showSchemas: ComputedRef<Common.BasicForm[]>
 }
 
 /**
@@ -31,10 +32,12 @@ export function useFormEvent (formProps: ComputedRef<BasicFormProps>, actions: A
 
     unref(formProps).schemas?.forEach(schema => {
       const { key } = schema
-      const value = get(values, key)
-      const hasKey = has(values, key)
-      if (hasKey) {
-        formModel[key] = value
+      if (key) {
+        const value = get(values, key)
+        const hasKey = has(values, key)
+        if (hasKey) {
+          formModel[key] = value
+        }
       }
     })
   }
@@ -53,8 +56,34 @@ export function useFormEvent (formProps: ComputedRef<BasicFormProps>, actions: A
     if (!ElFormRef) return
     try {
       await validate()
-      console.log(formModel, 'formModel222')
-      emit('submit', { ...formModel })
+      // 把表单中的值抛出去
+      const postData: Global.Recordable = {}
+      unref(actions.showSchemas).forEach(item => {
+        const { key, keyArr } = item
+
+        if (key) {
+          const value = JSON.parse(JSON.stringify(formModel[key]))
+          // 多个值对应多个key
+          if (keyArr && keyArr.length) {
+            // 将值处理成数组
+            const val = !isNullOrUndefOrEmpty(value) ?
+              isArray(value) ?
+                value :
+                isString(value) ?
+                  value.split(',') :
+                  []
+              : []
+            keyArr.forEach((k, i) => {
+              postData[k] = val[i] || ''
+            })
+          } else {
+            postData[key] = value
+          }
+        }
+
+      })
+      console.log(postData, 'postData111')
+      emit('submit', postData)
     }catch (err) {
       console.log(err, 'err1')
     }

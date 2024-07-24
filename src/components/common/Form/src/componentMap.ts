@@ -6,6 +6,7 @@ import Radio from './components/Radio.vue'
 import Checkbox from './components/Checkbox.vue'
 import Cascader from './components/Cascader.vue'
 import BasicTitle from './components/BasicTitle.vue'
+import Date from './components/Date.vue'
 import type { ComponentType } from './types/index.ts'
 
 const componentMap: Map<ComponentType, Component> = new Map()
@@ -14,6 +15,7 @@ componentMap.set('Select', Select)
 componentMap.set('Radio', Radio)
 componentMap.set('Checkbox', Checkbox)
 componentMap.set('Cascader', Cascader)
+componentMap.set('Date', Date)
 componentMap.set('BasicTitle', BasicTitle)
 
 export { componentMap }

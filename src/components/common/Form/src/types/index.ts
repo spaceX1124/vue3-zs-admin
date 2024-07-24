@@ -4,6 +4,7 @@ import { SelectEmitsType } from '../components/Select.vue'
 import { RadioEmitsType } from '../components/Radio.vue'
 import { CheckboxEmitsType } from '../components/Checkbox.vue'
 import { CascaderEmitsType } from '../components/Cascader.vue'
+import { DateEmitsType } from '../components/Date.vue'
 
 type ExtractPropTypes<T extends Component> = T extends new (...args: any) => any
     ? Omit<InstanceType<T>['$props']['options'], keyof VNodeProps>
@@ -21,6 +22,7 @@ export interface ComponentProps {
     Radio: ExtractPropTypes<typeof import('../components/Radio.vue')['default']>;
     Checkbox: ExtractPropTypes<typeof import('../components/Checkbox.vue')['default']>;
     Cascader: ExtractPropTypes<typeof import('../components/Cascader.vue')['default']>;
+    Date: ExtractPropTypes<typeof import('../components/Date.vue')['default']>;
     BasicTitle: ExtractPropTypes<typeof import('../components/BasicTitle.vue')['default']>;
 }
 
@@ -30,6 +32,7 @@ export interface ComponentEmits {
     Radio: RadioEmitsType;
     Checkbox: CheckboxEmitsType;
     Cascader: CascaderEmitsType;
+    Date: DateEmitsType,
     BasicTitle: Object
 }
 

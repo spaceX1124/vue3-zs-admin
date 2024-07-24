@@ -22,11 +22,13 @@ export function useFormValues (formProps: ComputedRef<BasicFormProps>, actions: 
       //     isBoolean(defaultValue) ? defaultValue : String(defaultValue)
       //     : ''
       // 感觉这儿还是不能去处理值转字符串的操作
-      formModel[key] = !isNullOrUndefOrEmpty(formData[key]) ?
-        formData[key]
-        : !isNullOrUndefOrEmpty(defaultValue) ?
-          defaultValue
-          : ''
+      if (key) {
+        formModel[key] = !isNullOrUndefOrEmpty(formData[key]) ?
+          formData[key]
+          : !isNullOrUndefOrEmpty(defaultValue) ?
+            defaultValue
+            : ''
+      }
     })
   }
   return { initDefault }

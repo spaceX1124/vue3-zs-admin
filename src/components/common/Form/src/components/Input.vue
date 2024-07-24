@@ -3,7 +3,7 @@
     :model-value="innerValue"
     @input="input"
     :placeholder="options.placeholder"
-    :type="options.type"
+    :type="options.type || 'text'"
     :maxlength="options.maxlength"
     :disabled="options.disabled"
     :showWordLimit="options.showWordLimit"
@@ -37,7 +37,7 @@ export type InputEmitsType = {
   clear?: () => void;
 }
 </script>
-<script lang="ts"œ setup>
+<script lang="ts" setup>
 import SlotRender from './slotRender.vue'
 import { checkSlot, getSlot } from '../helper.ts'
 import type { RenderComponentSlot } from '@/types/form.ts'

@@ -79,7 +79,6 @@ const getBindingComponent = computed(() => {
     options: {
       placeholder: `${NO_AUTO_LINK_COMPONENTS.includes(component) ? '请输入' : '请选择'}${title}`,
       valIsArray: true,
-      type: 'text',
       ...componentProps,
       dataList,
       async,

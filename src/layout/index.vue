@@ -9,6 +9,7 @@
           <el-menu-item index="/form/radio">radio</el-menu-item>
           <el-menu-item index="/form/checkbox">checkbox</el-menu-item>
           <el-menu-item index="/form/cascader">cascader</el-menu-item>
+          <el-menu-item index="/form/date">date</el-menu-item>
         </el-sub-menu>
       </el-menu>
     </el-aside>
