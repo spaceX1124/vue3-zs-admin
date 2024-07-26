@@ -53,7 +53,7 @@ module.exports = {
       'math': 'always'
     }],
     'no-unused-vars': 'off', // 变量未使用就报红
-    '@typescript-eslint/no-unused-vars': ['error', {
+    '@typescript-eslint/no-unused-vars': ['off', {
       "varsIgnorePattern": "^T$"
     }], // 可以解决枚举enum报错问题，变量未使用也可以正常报错
     'indent': [ // 强制使用一致的缩进

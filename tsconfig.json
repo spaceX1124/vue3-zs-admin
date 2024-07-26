@@ -25,7 +25,7 @@
     /* Linting */
     "strict": true,// 开启所有严格的类型检查
     "noUnusedLocals": true,  // 检查只声明、未使用的局部变量(只提示不报错)
-    "noUnusedParameters": true, // 检查未使用的函数参数(只提示不报错)
+    "noUnusedParameters": false, // 检查未使用的函数参数(只提示不报错)
     "noFallthroughCasesInSwitch": true, // 防止switch语句贯穿(即如果没有break语句后面不会执行)
     "baseUrl": "./", // 解析非相对模块的基地址，默认是当前目录
     "paths": {

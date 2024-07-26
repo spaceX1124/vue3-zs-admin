@@ -14,4 +14,17 @@ export namespace Common {
         children?: List[];
         [key: string]: any;
     }
+
+}
+
+export namespace Business {
+    // 菜单
+    export interface MenuItem {
+        id: number;
+        title: string;
+        name: string;
+        path: string;
+        icon?: string;
+        children?: MenuItem[];
+    }
 }
