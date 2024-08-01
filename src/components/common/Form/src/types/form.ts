@@ -32,6 +32,6 @@ export interface FormActionType {
 }
 
 export interface EmitEvent {
-    (e: 'register', tableAction: FormActionType): void;
+    (e: 'registerForm', formAction: FormActionType): void;
     (e: 'submit', formModel: Global.Recordable): void;
 }

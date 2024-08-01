@@ -13,31 +13,35 @@
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.1",
+    "axios": "^1.7.2",
     "element-plus": "^2.7.6",
     "lodash-es": "^4.17.21",
     "pinia": "^2.1.7",
     "vue": "^3.4.29",
     "vue-router": "^4.3.3",
-    "vxe-table": "^4.6.18"
+    "vxe-pc-ui": "^4.0.82",
+    "vxe-table": "^4.7.59"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.8.0",
     "@tsconfig/node20": "^20.1.4",
     "@types/lodash-es": "^4.17.12",
+    "@types/mockjs": "^1.0.10",
     "@types/node": "^20.14.5",
     "@vitejs/plugin-vue": "^5.0.5",
     "@vitejs/plugin-vue-jsx": "^4.0.0",
     "@vue/eslint-config-typescript": "^13.0.0",
     "@vue/tsconfig": "^0.5.1",
-    "@vxecli/import-unplugin-vue-components": "^1.0.4",
     "eslint": "^8.57.0",
     "eslint-plugin-vue": "^9.23.0",
+    "mockjs": "^1.1.0",
     "npm-run-all2": "^6.2.0",
     "sass": "1.66.1",
     "typescript": "~5.4.0",
     "unplugin-auto-import": "^0.17.6",
     "unplugin-vue-components": "^0.27.2",
     "vite": "^5.3.1",
+    "vite-plugin-lazy-import": "^1.0.7",
     "vue-tsc": "^2.0.21"
   }
 }

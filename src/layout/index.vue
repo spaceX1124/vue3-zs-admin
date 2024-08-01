@@ -19,28 +19,28 @@ import Menu from './menu/index.vue'
 </script>
 <style lang="scss" scoped>
  .layout {
-   width: 100%;
    height: 100vh;
    display: flex;
    background: #F5F6FA;
-   overflow: hidden;
    &-aside {
     height: 100%;
-     display: flex;
+    display: flex;
+    flex-shrink: 0;
    }
    &-main {
      flex: 1;
      display: flex;
      flex-direction: column;
+     overflow: hidden;
      &-header {
        height: 60px;
        background: #fff;
      }
      &-app {
-       flex: 1;
        margin: 16px 16px 0 16px;
        background: #fff;
-       overflow: auto;
+       overflow-y: auto;
+       flex: 1;
      }
    }
  }

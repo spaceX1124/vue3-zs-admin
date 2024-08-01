@@ -10,7 +10,7 @@ export function useForm (formProps?: BasicFormProps): [(tableAction: FormActionT
   const tableActionRef = ref<FormActionType>()
 
   // 初始化方法，方便在外部使用
-  function initTableAction (tableAction: FormActionType) {
+  function registerForm (tableAction: FormActionType) {
     tableActionRef.value = tableAction
     formProps && tableAction.setProps(formProps)
   }
@@ -30,5 +30,5 @@ export function useForm (formProps?: BasicFormProps): [(tableAction: FormActionT
     }
   }
 
-  return [initTableAction, methods]
+  return [registerForm, methods]
 }

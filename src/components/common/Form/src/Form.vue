@@ -95,7 +95,7 @@ const formAction: FormActionType = {
   setFieldsValue, // 手动为某些字段设置值
   updateSchema // 更新一个或多个字段列表
 }
-emit('register', formAction)
+emit('registerForm', formAction)
 
 onMounted(() => {
   initDefault()

@@ -23,6 +23,7 @@ export interface ComponentProps {
     Checkbox: ExtractPropTypes<typeof import('../components/Checkbox.vue')['default']>;
     Cascader: ExtractPropTypes<typeof import('../components/Cascader.vue')['default']>;
     Date: ExtractPropTypes<typeof import('../components/Date.vue')['default']>;
+    Upload: ExtractPropTypes<typeof import('../components/Upload.vue')['default']>;
     BasicTitle: ExtractPropTypes<typeof import('../components/BasicTitle.vue')['default']>;
 }
 

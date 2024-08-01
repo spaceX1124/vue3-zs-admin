@@ -1,8 +1,19 @@
-import { CellRenderType } from './table.ts'
 import type { FormItemRule } from 'element-plus'
 import { ComponentType, ComponentProps, ComponentEmits, FormActionType } from '@/components/common/Form'
 import { VNode } from 'vue'
 import { Common } from './index'
+
+/**
+ * 自定义渲染函数所需参数
+ * */
+interface CellRenderParams {
+    column: Common.BasicForm, // 字段信息
+    rowIndex: number // 当前行索引
+}
+/**
+ * 表格渲染函数类型
+ * */
+export type CellRenderType = (params: CellRenderParams) => VNode
 
 /**
  * 异步请求及字段取值自定义
@@ -12,6 +23,7 @@ export interface AsyncType {
     value?: string; // 可自定义值
     children?: string; // 级联的时候可用
     url?: string; // 接口地址
+    method?: 'get' | 'post';
     data?: Global.Recordable; // 接口参数
     remote?: boolean; // 是否开启远程输入搜索
     remoteKey?: string; // 远程输入搜索所需key
@@ -67,9 +79,13 @@ interface BaseFormSchema<T extends ComponentType = any> {
     defaultValue?: string | string[] // 默认值
     required?: boolean; // 是否必填
     colSpan?: number | ColEx;// 字段栅格布局样式，用于表单布局
+    text?: (row: Global.Recordable) => any; // 用于表格值的回显
+    lineClamp?: number; // 控制文字超出几行展示省略号
+    splitStyle?: string; // 控制表格多个内容回显如何连接，如，篮球/足球
+    fixed?: 'left' | 'right' // 表格列固定
 }
 interface ComponentFormSchema<T extends ComponentType = any> extends BaseFormSchema<T> {
-    component: T;
+    component: T; // 组件必传，不管是表格还是表单，都需要表明是什么组件，因为在渲染或者在处理值的时候要依赖是什么组件
 }
 
 type ComponentFormSchemaType<T extends ComponentType = ComponentType> = T extends any

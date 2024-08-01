@@ -62,6 +62,21 @@ export const mainUser = defineStore('mainStore', {
                   path: 'cascader'
                 }
               ]
+            },
+            {
+              id: 2,
+              title: '表格',
+              path: 'table',
+              name: 'table',
+              icon: 'icon-icon-user',
+              children: [
+                {
+                  id: 21,
+                  title: '基础表格',
+                  path: 'basicTable',
+                  name: 'basicTable'
+                }
+              ]
             }
           ]
           this.flag = true

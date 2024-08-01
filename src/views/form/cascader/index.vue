@@ -1,12 +1,12 @@
 <template>
   <div class="form-content">
-    <Form @register="register" />
+    <Form @registerForm="registerForm" />
   </div>
 </template>
 <script lang="tsx" setup>
 import { Form, useForm } from '@/components/common/Form'
 import { schemas } from './main.ts'
-const [register] = useForm({
+const [registerForm] = useForm({
   schemas: unref(schemas),
   baseColspan: 8
 })

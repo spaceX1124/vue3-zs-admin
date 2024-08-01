@@ -3,7 +3,6 @@
 
 body {
   height: 100%;
-  line-height: 1;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
@@ -13,7 +12,6 @@ body {
 html {
   height: 100%;
   box-sizing: border-box;
-  line-height: 1;
 }
 
 #app {
@@ -21,3 +19,6 @@ html {
   //min-width: 1440px;
 }
 
+* {
+  box-sizing: border-box;
+}
