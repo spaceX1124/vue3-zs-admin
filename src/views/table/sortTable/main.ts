@@ -2,6 +2,14 @@ import { Common } from '@/types'
 
 export const schemas: Common.BasicForm[] = [
   {
+    key: 'key0',
+    component: 'Input',
+    title: '年龄',
+    width: '100px',
+    fixed: 'left',
+    sortable: true
+  },
+  {
     key: 'key1',
     component: 'Input',
     title: '姓名',

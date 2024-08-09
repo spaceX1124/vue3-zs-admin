@@ -4,21 +4,18 @@ import { cloneDeep } from '@/utils/tools.ts'
 import { Common } from '@/types'
 import { http } from '@/utils/http'
 import { isArray, isBoolean, isNullOrUndefOrEmpty } from '@/utils/is.ts'
+import { ElImage } from 'element-plus'
+import { isString } from 'lodash-es'
 
-interface ActionType {
-    getPaginationInfo: ComputedRef<PaginationInfo>
-}
 interface Result {
     getColumns: ComputedRef<Common.BasicForm[]>
 }
 /**
  * 负责从外部传入的表头数据中,处理动态的表头，外面需要定义传进来的格式，然后我们通过传递进来的格式去进一步处理，最终渲染
  * @param {innerProps} innerProps 通过useTable传入的一些参数
- * @param {ActionType} actions
  * @return {Result} 需要暴露给外面的一些数据和方法
  * */
-export function useColumns (innerProps:ComputedRef<BasicTableProps>, actions: ActionType): Result {
-  const { getPaginationInfo } = actions
+export function useColumns (innerProps:ComputedRef<BasicTableProps>): Result {
   // 处理数据之后的表头字段
   const dealColumns = ref<Common.BasicForm[]>([])
   // 给表格的表头字段
@@ -48,21 +45,6 @@ export function useColumns (innerProps:ComputedRef<BasicTableProps>, actions: Ac
         }
       })()
     })).then(res => {
-      // 设置序号
-      if(!unref(innerProps).seqHidden){
-        res.unshift({
-          key: 'indexSeq',
-          component: 'Input',
-          title: '序号',
-          type: 'seq',
-          width: '50px',
-          fixed: 'left',
-          cellRender: ({ rowIndex }) => {
-            const num = (unref(getPaginationInfo).pageNum - 1) * 10 + rowIndex + 1
-            return h('span', num)
-          }
-        })
-      }
       dealColumns.value = res
       createTableColumns()
     })
@@ -119,9 +101,32 @@ export function useColumns (innerProps:ComputedRef<BasicTableProps>, actions: Ac
               return value
             }
             break
+          case 'Upload':
+            column.cellRender = (params) => {
+              let imageList = []
+              if (params.row[params.column.key]) {
+                if (isString(params.row[params.column.key])) {
+                  imageList = params.row[params.column.key].split(',')
+                } else if(isArray(params.row[params.column.key])) {
+                  imageList = params.row[params.column.key]
+                } else {
+                  imageList = []
+                }
+              }
+              // 这儿显示的是缩略图，不需要太要求样式
+              return h(ElImage, {
+                src: imageList[0] || '',
+                previewSrcList: imageList,
+                fit: 'cover',
+                style: {
+                  width: '40px!important',
+                  height: '40px!important'
+                }
+              })
+            }
         }
         if (strategyFn) {
-          column.text = (row: Global.Recordable) => strategyFn(column, column?.key ? row[column.key] : '')
+          column.text = (row: Global.Recordable) => strategyFn(column, row[column.key])
         }
       }
       return column

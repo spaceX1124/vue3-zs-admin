@@ -1,17 +1,22 @@
 <template>
-  <el-form v-bind="getBindingElForm" :model="formModel" ref="ElFormRef">
-    <el-row v-bind="getBindingElRow">
-      <template v-for="schema in showSchemas" :key="schema.key">
-        <FormItem
-          :schema="schema"
-          :formProps="getProps"
-          :formModel="formModel"
-          :setFormModelValue="setFormModelValue"
-        />
-      </template>
-      <FormAction :submit="submit"/>
-    </el-row>
-  </el-form>
+  <div class="form-container">
+    <el-form v-bind="getBindingElForm"
+             :model="formModel"
+             ref="ElFormRef"
+             class="custom-form">
+      <el-row v-bind="getBindingElRow">
+        <template v-for="schema in showSchemas" :key="schema.key">
+          <FormItem
+            :schema="schema"
+            :formProps="getProps"
+            :formModel="formModel"
+            :setFormModelValue="setFormModelValue"
+          />
+        </template>
+      </el-row>
+    </el-form>
+    <FormAction :submit="submit" :clear="clearForm"/>
+  </div>
 </template>
 <script setup lang="ts">
 import { BasicFormProps, EmitEvent, FormActionType } from './types/form.ts'
@@ -61,7 +66,8 @@ const showSchemas = computed(() => {
 // 给el-form绑定的一些参数
 const getBindingElForm = computed(() => {
   return {
-    labelPosition: unref(getProps).labelPosition || 'top'
+    labelPosition: unref(getProps).labelPosition || 'top',
+    labelWidth: '130px'
   }
 })
 // 给el-row绑定的一些参数
@@ -76,7 +82,7 @@ const { initDefault } = useFormValues(getProps, {
   formModel
 })
 // 操作表单数据相关方法
-const { setFieldsValue, submit, updateSchema } = useFormEvent(getProps, {
+const { setFieldsValue, submit, updateSchema, clearForm } = useFormEvent(getProps, {
   formModel,
   ElFormRef,
   emit,
@@ -101,3 +107,14 @@ onMounted(() => {
   initDefault()
 })
 </script>
+<style lang="scss" scoped>
+.form-container {
+  display: flex;
+  .custom-form {
+    flex: 1;
+  }
+  .search-btn-box {
+    width: 200px;
+  }
+}
+</style>

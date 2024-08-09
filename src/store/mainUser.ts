@@ -60,6 +60,12 @@ export const mainUser = defineStore('mainStore', {
                   title: '级联',
                   name: 'cascader',
                   path: 'cascader'
+                },
+                {
+                  id: 17,
+                  title: '上传图片',
+                  name: 'upload',
+                  path: 'upload'
                 }
               ]
             },
@@ -75,6 +81,24 @@ export const mainUser = defineStore('mainStore', {
                   title: '基础表格',
                   path: 'basicTable',
                   name: 'basicTable'
+                },
+                {
+                  id: 22,
+                  title: '服务端排序',
+                  path: 'sortTable',
+                  name: 'sortTable'
+                },
+                {
+                  id: 23,
+                  title: '可选中数据',
+                  path: 'checkboxTable',
+                  name: 'checkboxTable'
+                },
+                {
+                  id: 24,
+                  title: '虚拟表格',
+                  path: 'virtualTable',
+                  name: 'virtualTable'
                 }
               ]
             }

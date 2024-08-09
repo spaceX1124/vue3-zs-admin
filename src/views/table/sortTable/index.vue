@@ -10,6 +10,9 @@ const [registerTable] = useTable({
   schemas,
   async: {
     url: '/pageList'
+  },
+  sortConfig: {
+    remote: true
   }
 })
 </script>

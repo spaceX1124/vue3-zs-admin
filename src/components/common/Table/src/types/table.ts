@@ -1,10 +1,23 @@
 import { Common } from '@/types'
+import { VxeTablePropTypes } from 'vxe-pc-ui'
+import RowConfig = VxeTablePropTypes.RowConfig;
 /**
  * 分页信息类型
  * */
 export interface PaginationInfo {
     pageNum: number; // 当前页数
     pageSize: number; // 每页显示条目个数
+}
+interface DefaultSortType {
+    field: string;
+    order: 'asc' | 'desc'; // asc（升序）,desc（降序）
+}
+/**
+ * 排序配置
+ * */
+interface SortConfigType {
+    defaultSort?: DefaultSortType | DefaultSortType[], // 默认排序（只会在初始化时被触发一次）
+    remote?: boolean; // 所有列是否使用服务端排序，如果设置为 true 则不会对数据进行处理
 }
 
 /**
@@ -23,11 +36,17 @@ export interface BasicTableProps {
     virtualScroll?: boolean; // 是否开启虚拟滚动
     stripe?: boolean; // 是否带有斑马纹
     border?: boolean | 'full' | 'outer' | 'inner' | 'none'; // 边框
+    sortConfig?: SortConfigType;// 排序
+    openCheckbox?: boolean; // 是否开启复选框
+    openVirtual?: boolean;// 是否开启虚拟表格，
+    rowConfig?: RowConfig; // 设置固定的行高，开启虚拟表格的时候必须要传，否则可能会影响UI
 }
 
 export interface TableActionType {
     setProps: (props: BasicTableProps) => void;
     setLoading: (loading: boolean) => void;
+    getSelectRecords:() => Global.Recordable[];
+    clearAllCheckbox: () => void;
 }
 
 export interface EmitEvent {

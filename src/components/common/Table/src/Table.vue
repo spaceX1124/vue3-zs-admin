@@ -1,7 +1,11 @@
 <template>
   <div class="table-wrapper">
     <div class="table-wrapper-box">
-      <vxe-table v-bind="getBindingVTable">
+      <vxe-table
+        ref="VxeTableRef"
+        v-bind="getBindingVTable"
+        @sort-change="sortChangeEvent"
+      >
         <template #loading>
           <div class="loading-box">
             <el-icon class="is-loading" size="28px">
@@ -10,10 +14,44 @@
             <span>Loading...</span>
           </div>
         </template>
+        <template #empty>
+          <div class="emptyBox">
+            <img src="@/assets/images/noData.png" alt="">
+            <p>这里暂时没有内容哦～</p>
+          </div>
+        </template>
+        <vxe-column
+          v-if="getProps.openCheckbox"
+          width="50"
+          type="checkbox"
+          align="center"
+          fixed="left">
+          <template #header="{ checked, indeterminate }">
+            <el-checkbox
+              :modelValue="checked"
+              :indeterminate="indeterminate"
+              @change="(val: string | number | boolean) =>
+                selectAllEvent(val)
+              "
+            />
+          </template>
+          <template #checkbox="{ row, checked }">
+            <el-checkbox
+              :modelValue="checked"
+              @change="toggleCheckboxEvent(row)"
+            />
+          </template>
+        </vxe-column>
+        <vxe-column
+          type="seq"
+          title="序号"
+          fixed="left"
+          width="50"/>
         <vxe-column
           v-for="column in showColumns"
           :key="column.key"
-          v-bind="getBindingVColumn(column)">
+          v-bind="getBindingVColumn(column)"
+          :class-name="() => column.lineClamp && column.lineClamp > 1 ? 'custom123': ''">
           <template v-slot="scope">
             <CellRender v-if="column.cellRender"
                         :scope="scope"
@@ -48,8 +86,8 @@
         :page-sizes="[10, 20, 30, 40, 50, 100]"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
-        @size-change="handleSizeChangeFn"
-        @current-change="handleCurrentChangeFn"
+        @size-change="sizeChange"
+        @current-change="currentChange"
       />
     </div>
   </div>
@@ -61,12 +99,16 @@ import { BasicTableProps, EmitEvent, TableActionType } from './types/table.ts'
 import { useSourceData } from './hooks/useSourceData.ts'
 import { useColumns } from './hooks/useColumn.ts'
 import { useLoading } from './hooks/useLoading.ts'
+import { useCheckbox } from './hooks/useCheckbox.ts'
 import { Loading } from '@element-plus/icons-vue'
 import { isNullOrUndefOrEmpty } from '@/utils/is.ts'
 import CellRender from './components/cellRender.vue'
 import { usePagination } from './hooks/usePagination.ts'
 import type { VxeTableProps, VxeColumnProps } from 'vxe-table'
 import { Common } from '@/types'
+import { useSort } from '@/components/common/Table/src/hooks/useSort.ts'
+
+const VxeTableRef = ref()
 
 // 当前外部使用table组件时通过useTable传入的一些参数（BasicTableProps）
 let innerProps = ref<BasicTableProps>({})
@@ -75,20 +117,28 @@ let innerProps = ref<BasicTableProps>({})
 let getProps = computed(() => {
   return { ...unref(innerProps) }
 })
-
-// 处理分页
-const { getPaginationInfo } = usePagination(getProps)
-
-// 处理表格加载状态
+// 处理表格加载状态-----hooks
 const { getLoading, setLoading } = useLoading()
+// 处理分页-----hooks
+const { getPaginationInfo, sizeChange, currentChange } = usePagination(getProps, {
+  fetchTableData: async () => { // 如果直接写fetchTableData，会存在变量为声明问题，只能写一个callback
+    await fetchTableData()
+  },
+  dealPageSelected: () => {
+    dealPageSelected()
+  }
+})
+// 处理表头数据-----hooks
+let { getColumns } = useColumns(getProps)
+// 处理表格数据-----hooks
+let { getTableData, total, fetchTableData, tableRequestParams } = useSourceData(getProps, { setLoading, getPaginationInfo, VxeTableRef })
+// 处理表格选中-----hooks
+const { selectedData, dealPageSelected, toggleCheckboxEvent, selectAllEvent, clearAllCheckbox } = useCheckbox({ VxeTableRef, getTableData })
+// 处理表格字段排序-----hooks
+const { sortChangeEvent } = useSort({ fetchTableData, tableRequestParams })
 
-// 处理表头数据
-let { getColumns } = useColumns(getProps, { getPaginationInfo })
 // 传递给VColumn的表头数据
 const showColumns = computed(() => unref(getColumns))
-
-// 处理表格数据
-let { getTableData, total } = useSourceData(getProps, { setLoading, getPaginationInfo })
 
 // 给vxe-table绑定的一些参数
 const getBindingVTable = computed<VxeTableProps>(() => {
@@ -98,8 +148,20 @@ const getBindingVTable = computed<VxeTableProps>(() => {
     stripe: unref(getProps).stripe || false, // 是否带有斑马纹
     border: unref(getProps).border || true, // 边框
     round: true,
+    showOverflow: true, // 设置所有内容过长时显示为省略号
     height: 'auto',
-    rowConfig: { isHover: true }
+    autoResize: true,
+    rowConfig: { isHover: true },
+    sortConfig: unref(getProps).sortConfig, // 表格排序配置
+    'scroll-y': unref(getProps).openVirtual ? { enabled: true, gt: 49 } : undefined, // 只针对纵向，横向字段不会太多,当开启了虚拟表格，当一页>=50就启用
+    seqConfig: {
+      // 这是序号值，主要是分页之后
+      seqMethod ({ rowIndex }) {
+        return (unref(getPaginationInfo).pageNum - 1) * unref(getPaginationInfo).pageSize + rowIndex + 1
+      }
+    },
+    columnConfig: { resizable: true }, // 可调节表格宽度
+    rowConfig: unref(getProps).rowConfig
   }
 })
 
@@ -107,12 +169,15 @@ const getBindingVTable = computed<VxeTableProps>(() => {
 function getBindingVColumn (column: Common.BasicForm): VxeColumnProps {
   return {
     field: column.key,
+    align: 'center',
     title: column.title,
     width: column.width || '', // 没传的时候，不设置width，按照表格的宽度进行均匀分配
     minWidth: column.minWidth || '100px',
     type: column.type || null,
-    showOverflow: column.lineClamp ? false : 'tooltip',
-    fixed: column.fixed
+    showOverflow: column.lineClamp ? false : 'tooltip', // 表格内容超出显示省略号
+    showHeaderOverflow: true, // 表头内容溢出时显示为省略号，当开启纵向虚拟滚动后不支持自动换行
+    fixed: column.fixed, // 固定当前列
+    sortable: column.sortable // 当前列是否排序
   }
 }
 
@@ -124,7 +189,9 @@ function setProps (propsData: BasicTableProps) {
 // 可被外部执行的一些方法
 const tableAction: TableActionType = {
   setProps,
-  setLoading
+  setLoading,
+  getSelectRecords, // 获取选中的数据
+  clearAllCheckbox // 清空所有数据选中
 }
 
 const emits = defineEmits<EmitEvent>()
@@ -138,19 +205,35 @@ function dealShowVal (val: any) {
   return val
 }
 
-function handleSizeChangeFn () {
+// 获取选中的数据
+function getSelectRecords () {
+  return selectedData.value
+}
 
-}
-function handleCurrentChangeFn () {
-  
-}
 </script>
 <style lang="scss" scoped>
 .table-wrapper {
-  height: 100%;
+  flex: 1;
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
   &-box {
-    height: calc(100% - 60px);
+    flex: 1;
+    overflow: hidden;
   }
+  :deep(.custom123){
+    .c--ellipsis {
+      overflow: visible!important;
+      text-overflow: clip!important;
+      white-space: normal!important;
+    }
+  }
+}
+.pagination-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 60px;
 }
 .loading-box {
   display: flex;
@@ -159,10 +242,19 @@ function handleCurrentChangeFn () {
   align-items: center;
   color: $primary-color1;
 }
-.pagination-box {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 60px;
+.emptyBox{
+  padding: 20px 0;
+  text-align: center;
+  img{
+    width: 25%;
+    min-width: 120px;
+    max-width: 216px;
+    height: auto;
+  }
+  p{
+    color: $primary-color3;
+    line-height: 18px;
+  }
 }
+
 </style>

@@ -9,8 +9,10 @@ export function useLoading () {
   function setLoading (loading: boolean) {
     loadingRef.value = loading
   }
+
   return {
     getLoading,
     setLoading
   }
+
 }

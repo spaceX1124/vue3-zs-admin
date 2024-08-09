@@ -20,6 +20,13 @@ export function useTable (tableProps?: BasicTableProps): [(tableAction: TableAct
     },
     setLoading: (loading:boolean) => {
       tableActionRef.value?.setLoading(loading)
+    },
+    // 获取选中的数据
+    getSelectRecords: () => {
+      return tableActionRef.value?.getSelectRecords() || []
+    },
+    clearAllCheckbox: () => {
+      tableActionRef.value?.clearAllCheckbox()
     }
   }
 

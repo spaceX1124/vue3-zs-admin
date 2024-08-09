@@ -36,6 +36,7 @@ import { isArray, isNullOrUndefOrEmpty } from '@/utils/is.ts'
 import type { AsyncType, RenderComponentSlot } from '@/types/form.ts'
 import { debounce } from 'lodash-es'
 import { ElMessage } from 'element-plus'
+import { http } from '@/utils/http'
 interface PropsType {
   modelValue: string | number | string[] | number[];
   options?: {
@@ -128,8 +129,7 @@ async function focusRemoteMethod () {
       console.log(url, data)
       loading.value = true
       // 先模拟请求
-      const res = await getMockDataList()
-      // const res: Global.Recordable[] = await http['get'](url, data)
+      const res: Global.Recordable[] = await http['get'](url, data)
       loading.value = false
       flag.value = false
       // 处理数据格式
@@ -166,8 +166,7 @@ async function searchData (query?: string) {
       }
       loading.value = true
       // 先模拟请求
-      const res = await getMockDataList()
-      // const res: Global.Recordable[] = await http['get'](url, data)
+      const res: Global.Recordable[] = await http['get'](url, data)
       loading.value = false
       // 处理数据格式
       dealDataList(res)
@@ -215,27 +214,8 @@ function dealDataList (arr?: Global.Recordable[]) {
       })
     }
   }
+  console.log(listData, 'listData123')
   showList.value = listData
 }
-// 模拟接口异步返回数据
-function getMockDataList (): Promise<Global.Recordable[]> {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve([
-        {
-          id: 1,
-          name: '张三'
-        },
-        {
-          id: 2,
-          name: '李四'
-        },
-        {
-          id: 3,
-          name: '王五'
-        }
-      ])
-    }, 300)
-  })
-}
+
 </script>

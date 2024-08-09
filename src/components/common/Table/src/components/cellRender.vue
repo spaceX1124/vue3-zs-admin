@@ -22,7 +22,8 @@ export default {
       // 执行表头字段中的cellRender函数
       return props.column?.cellRender ? props.column.cellRender({
         column: props.column,
-        rowIndex: props.scope.$rowIndex
+        rowIndex: props.scope.$rowIndex,
+        row: props.scope.row
       }) : '-'
     }
   }

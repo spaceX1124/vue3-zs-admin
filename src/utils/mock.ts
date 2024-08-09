@@ -3,12 +3,13 @@ import Mock from 'mockjs'
 const Random = Mock.Random
 // 延时200-600毫秒请求到数据
 Mock.setup({
-  timeout: '200-600'
+  timeout: '200'
 })
 Mock.mock('/api/pageList', 'post', (data) => {
   // 定义这个接口的总数
-  const total = 37
+  const total = 370
   const postData = JSON.parse(data.body)
+  console.log(postData, 'postData')
   // 向上取整，一页10条->4页，一页20条->2页，一页30条->2页，一页40条->1页
   const pages = Math.ceil(total / postData.pageSize)
   // 取余，一页10条->7，一页20条->17，一页30条->7，一页40条->37
@@ -18,6 +19,8 @@ Mock.mock('/api/pageList', 'post', (data) => {
   const { list } = Mock.mock({
     [`list|${loopNum}`]: [
       {
+        'id|+1': 1 + (postData.pageNum - 1) * postData.pageSize,
+        key0: '@integer(10, 100)', // 年龄
         key1: '@cname()', // 姓名
         key2: '@integer(0, 2)', // 性别
         key3: '@integer(1, 3)', // 爱好单选
@@ -32,12 +35,30 @@ Mock.mock('/api/pageList', 'post', (data) => {
         key8: [1, 2, 3], // 爱好多选
         key9: function () {
           // 生成一个带中文人名的图片
-          const bgColor = Random.color()
-          return Random.image('600x600', bgColor) + '&text=' + encodeURIComponent('张三')
+          return Random.image('100x400', Random.color()) + '&text=' + encodeURIComponent('张三')
+        },
+        key10: function () {
+          // 生成一个带中文人名的图片
+          return [
+            Random.image('200x400', Random.color()) + '&text=' + encodeURIComponent('张三11'),
+            Random.image('200x400', Random.color()) + '&text=' + encodeURIComponent('张三22')
+          ]
         }
       }
     ]
   })
+  // 处理排序
+  if (postData.sortData) {
+    list.sort((a: any, b: any) => {
+      if (postData.sortData.order === 'asc') {
+        return a[postData.sortData.field] - b[postData.sortData.field]
+      }
+      if (postData.sortData.order === 'desc') {
+        return b[postData.sortData.field] - a[postData.sortData.field]
+      }
+    })
+  }
+  console.log(list, 'list1')
   return {
     code: 0,
     data: {

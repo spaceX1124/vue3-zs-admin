@@ -88,6 +88,10 @@ export function useFormEvent (formProps: ComputedRef<BasicFormProps>, actions: A
       console.log(err, 'err1')
     }
   }
+  // 清空表单值
+  function clearForm () {
+    
+  }
 
   // 更新一个或多个字段的配置，以达到控制字段的特性
   function updateSchema (schema: Common.BasicForm | Common.BasicForm[]) {
@@ -127,6 +131,7 @@ export function useFormEvent (formProps: ComputedRef<BasicFormProps>, actions: A
     submit,
     validate,
     resetFields,
-    updateSchema
+    updateSchema,
+    clearForm
   }
 }

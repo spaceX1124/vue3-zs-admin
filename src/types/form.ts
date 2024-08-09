@@ -9,6 +9,7 @@ import { Common } from './index'
 interface CellRenderParams {
     column: Common.BasicForm, // 字段信息
     rowIndex: number // 当前行索引
+    row: Global.Recordable // 当前行数据s
 }
 /**
  * 表格渲染函数类型
@@ -60,7 +61,7 @@ export interface ColEx {
  * 表格表单基础数据格式
  * */
 interface BaseFormSchema<T extends ComponentType = any> {
-    key?: string; // （回显表格数据所需key | 表单绑定所需要的key）
+    key: string; // （回显表格数据所需key | 表单绑定所需要的key）
     keyArr?: string[]; //  多值的时候，需要key一一对应
     title?: string; // 名称
     componentProps?: ComponentProps[T]; // 组件props参数
@@ -83,6 +84,7 @@ interface BaseFormSchema<T extends ComponentType = any> {
     lineClamp?: number; // 控制文字超出几行展示省略号
     splitStyle?: string; // 控制表格多个内容回显如何连接，如，篮球/足球
     fixed?: 'left' | 'right' // 表格列固定
+    sortable?: boolean; // 表格，该字段是否开启排序
 }
 interface ComponentFormSchema<T extends ComponentType = any> extends BaseFormSchema<T> {
     component: T; // 组件必传，不管是表格还是表单，都需要表明是什么组件，因为在渲染或者在处理值的时候要依赖是什么组件

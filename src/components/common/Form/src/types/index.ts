@@ -5,6 +5,7 @@ import { RadioEmitsType } from '../components/Radio.vue'
 import { CheckboxEmitsType } from '../components/Checkbox.vue'
 import { CascaderEmitsType } from '../components/Cascader.vue'
 import { DateEmitsType } from '../components/Date.vue'
+import { UploadEmitsType } from '../components/Upload.vue'
 
 type ExtractPropTypes<T extends Component> = T extends new (...args: any) => any
     ? Omit<InstanceType<T>['$props']['options'], keyof VNodeProps>
@@ -34,6 +35,7 @@ export interface ComponentEmits {
     Checkbox: CheckboxEmitsType;
     Cascader: CascaderEmitsType;
     Date: DateEmitsType,
+    Upload: UploadEmitsType;
     BasicTitle: Object
 }
 

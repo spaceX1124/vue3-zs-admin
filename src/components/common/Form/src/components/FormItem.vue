@@ -43,13 +43,25 @@ const getBindingElCol = computed(() => {
   const { colSpan } = props.schema
   // 表单的布局配置
   const { baseColspan } = props.formProps
+  // 如果不由外部控制col占比，那就设定成响应式的
   let colProps: ColEx = { span: 12 }
-  if (isNumber(baseColspan)) {
-    colProps.span = baseColspan
+  // 表单配置控制当前字段布局展示
+  if (!isNullOrUndefOrEmpty(baseColspan)) {
+    if (isNumber(baseColspan)) {
+      colProps.span = baseColspan
+    }
+    if (isObj(baseColspan)) {
+      colProps = { ...baseColspan }
+    }
+  } else {
+    // 设定成响应式的
+    colProps.xs = 24 // <768px
+    colProps.sm = 24 // ≥768px
+    colProps.md = 12 // ≥992px
+    colProps.lg = 8 // ≥1200px，一行展示3个
+    colProps.xl = 6 // ≥1920px，一行展示4个
   }
-  if (isObj(baseColspan)) {
-    colProps = { ...baseColspan }
-  }
+  // 字段自身自定义控制自己的布局
   if (isNumber(colSpan)) {
     colProps.span = colSpan
   }
@@ -111,3 +123,11 @@ function getRules () {
 }
 
 </script>
+
+<style lang="scss" scoped>
+//@media screen and (min-width: 1920px) {
+//  .component-item {
+//    width: 20%!important;
+//  }
+//}
+</style>

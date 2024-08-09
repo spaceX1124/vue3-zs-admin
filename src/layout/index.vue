@@ -39,8 +39,10 @@ import Menu from './menu/index.vue'
      &-app {
        margin: 16px 16px 0 16px;
        background: #fff;
-       overflow-y: auto;
+       //overflow-y: auto;
        flex: 1;
+       display: flex;
+       flex-direction: column;
      }
    }
  }
