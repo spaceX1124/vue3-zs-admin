@@ -1,27 +1,23 @@
 <template>
-  <div class="form-container">
-    <el-form v-bind="getBindingElForm"
-             :model="formModel"
-             ref="ElFormRef"
-             class="custom-form">
-      <el-row v-bind="getBindingElRow">
-        <template v-for="schema in showSchemas" :key="schema.key">
-          <FormItem
-            :schema="schema"
-            :formProps="getProps"
-            :formModel="formModel"
-            :setFormModelValue="setFormModelValue"
-          />
-        </template>
-      </el-row>
-    </el-form>
-    <FormAction :submit="submit" :clear="clearForm"/>
-  </div>
+  <el-form v-bind="getBindingElForm"
+           :model="formModel"
+           ref="ElFormRef"
+           class="custom-form">
+    <el-row v-bind="getBindingElRow">
+      <template v-for="schema in showSchemas" :key="schema.key">
+        <FormItem
+          :schema="schema"
+          :formProps="getProps"
+          :formModel="formModel"
+          :setFormModelValue="setFormModelValue"
+        />
+      </template>
+    </el-row>
+  </el-form>
 </template>
 <script setup lang="ts">
 import { BasicFormProps, EmitEvent, FormActionType } from './types/form.ts'
 import FormItem from './components/FormItem.vue'
-import FormAction from './components/FormAction.vue'
 import { cloneDeep, deepMerge } from '@/utils/tools.ts'
 import { useFormValues } from './hooks/useFormValues.ts'
 import { useFormEvent } from './hooks/useFormEvent.ts'
@@ -50,7 +46,6 @@ let getProps = computed(() => {
 
 // 回显字段
 const showSchemas = computed(() => {
-  console.log('字段列表刷新了0', schemaRef)
   const schemas = cloneDeep(unref(schemaRef).length ? unref(schemaRef) : unref(getProps).schemas)
   // 处理可显示的字段
   const showList = schemas?.filter(schema => {
@@ -82,7 +77,7 @@ const { initDefault } = useFormValues(getProps, {
   formModel
 })
 // 操作表单数据相关方法
-const { setFieldsValue, submit, updateSchema, clearForm } = useFormEvent(getProps, {
+const { setFieldsValue, submit, updateSchema, clearFormValues } = useFormEvent(getProps, {
   formModel,
   ElFormRef,
   emit,
@@ -91,15 +86,19 @@ const { setFieldsValue, submit, updateSchema, clearForm } = useFormEvent(getProp
 })
 
 // 设置外部传递进来的参数
-function setProps (propsData: BasicFormProps) {
+function setFormProps (propsData: BasicFormProps) {
+  console.log('0000', propsData)
   innerProps.value = deepMerge(unref(innerProps), propsData)
+  console.log(innerProps, 'innerProps123')
 }
 
 const formAction: FormActionType = {
-  setProps,
+  setFormProps, // 设置表单组件需要的参数
   setFormModelValue, // 表单某个字段值改变时调用，为表单数据设置值
   setFieldsValue, // 手动为某些字段设置值
-  updateSchema // 更新一个或多个字段列表
+  updateSchema, // 更新一个或多个字段列表
+  clearFormValues, // 清除表单中的所有值
+  submit
 }
 emit('registerForm', formAction)
 
@@ -107,14 +106,3 @@ onMounted(() => {
   initDefault()
 })
 </script>
-<style lang="scss" scoped>
-.form-container {
-  display: flex;
-  .custom-form {
-    flex: 1;
-  }
-  .search-btn-box {
-    width: 200px;
-  }
-}
-</style>

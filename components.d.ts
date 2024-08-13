@@ -43,6 +43,7 @@ declare module 'vue' {
     Radio: typeof import('./src/components/common/Form/src/components/Radio.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SearchForm: typeof import('./src/components/common/searchForm/src/searchForm.vue')['default']
     Select: typeof import('./src/components/common/Form/src/components/Select.vue')['default']
     SlotRender: typeof import('./src/components/common/Form/src/components/slotRender.vue')['default']
     Table: typeof import('./src/components/common/Table/src/Table.vue')['default']

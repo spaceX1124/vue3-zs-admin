@@ -99,6 +99,12 @@ export const mainUser = defineStore('mainStore', {
                   title: '虚拟表格',
                   path: 'virtualTable',
                   name: 'virtualTable'
+                },
+                {
+                  id: 25,
+                  title: '可搜索的表格',
+                  path: 'searchTable',
+                  name: 'searchTable'
                 }
               ]
             }

@@ -25,10 +25,12 @@ export interface BasicFormProps {
 }
 
 export interface FormActionType {
-    setProps: (props: BasicFormProps) => void;
+    setFormProps: (props: BasicFormProps) => void;
     setFormModelValue: (key: string, value: any, schema: Common.BasicForm) => void;
-    setFieldsValue: (values: Global.Recordable) => void
-    updateSchema: (schema: Common.BasicForm | Common.BasicForm[]) => void
+    setFieldsValue: (values: Global.Recordable) => void;
+    updateSchema: (schema: Common.BasicForm | Common.BasicForm[]) => void;
+    clearFormValues: Global.Fn,
+    submit: Global.PromiseFn<any, Global.Recordable | undefined>
 }
 
 export interface EmitEvent {

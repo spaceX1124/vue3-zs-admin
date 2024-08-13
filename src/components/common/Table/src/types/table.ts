@@ -40,13 +40,19 @@ export interface BasicTableProps {
     openCheckbox?: boolean; // 是否开启复选框
     openVirtual?: boolean;// 是否开启虚拟表格，
     rowConfig?: RowConfig; // 设置固定的行高，开启虚拟表格的时候必须要传，否则可能会影响UI
+    align?: 'left' | 'center' | 'right'; // 内容对齐方式
+    headerAlign?: 'left' | 'center' | 'right'; // 表头对齐方式
+    showSearch?: boolean; // 显示搜索组件
+    showOperate?: boolean; // 显示操作
 }
 
 export interface TableActionType {
-    setProps: (props: BasicTableProps) => void;
-    setLoading: (loading: boolean) => void;
-    getSelectRecords:() => Global.Recordable[];
-    clearAllCheckbox: () => void;
+    setTableProps: Global.Fn<BasicTableProps, void>;
+    setLoading: Global.Fn<boolean, void>;
+    getSelectRecords:Global.Fn<undefined, Global.Recordable[]>;
+    clearAllCheckbox: Global.Fn;
+    refreshTableRequestParams: Global.Fn;
+    fetchTableData: Global.Fn;
 }
 
 export interface EmitEvent {

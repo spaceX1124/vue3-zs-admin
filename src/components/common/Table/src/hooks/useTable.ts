@@ -11,12 +11,12 @@ export function useTable (tableProps?: BasicTableProps): [(tableAction: TableAct
   // 初始化方法，方便在外部使用
   function registerTable (tableAction: TableActionType) {
     tableActionRef.value = tableAction
-    tableProps && tableAction.setProps(tableProps)
+    tableProps && tableAction.setTableProps(tableProps)
   }
   // 暴露给外部使用的一些方法，当我们在外部调用下面的方法的时候，实际上是调用tableActionRef中的方法，也就是VTable/index.vue中tableAction中的方法
   const methods:TableActionType = {
-    setProps: (tableProps:BasicTableProps) => {
-      tableActionRef.value?.setProps(tableProps)
+    setTableProps: (tableProps:BasicTableProps) => {
+      tableActionRef.value?.setTableProps(tableProps)
     },
     setLoading: (loading:boolean) => {
       tableActionRef.value?.setLoading(loading)
@@ -25,8 +25,17 @@ export function useTable (tableProps?: BasicTableProps): [(tableAction: TableAct
     getSelectRecords: () => {
       return tableActionRef.value?.getSelectRecords() || []
     },
+    // 清空所有选中
     clearAllCheckbox: () => {
       tableActionRef.value?.clearAllCheckbox()
+    },
+    // 修改表格请求参数
+    refreshTableRequestParams: () => {
+      tableActionRef.value?.refreshTableRequestParams()
+    },
+    // 请求表格
+    fetchTableData: () => {
+      tableActionRef.value?.fetchTableData()
     }
   }
 

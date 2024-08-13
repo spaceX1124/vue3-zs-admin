@@ -11,7 +11,8 @@ interface Result {
   getTableData: ComputedRef<Global.Recordable[]>;
   total: Ref<number>;
   tableRequestParams: Ref<Global.Recordable>;
-  fetchTableData: Global.PromiseFn
+  fetchTableData: Global.PromiseFn<void>;
+  refreshTableRequestParams: Global.Fn
 }
 
 /**
@@ -28,6 +29,11 @@ export function useSourceData (innerProps:ComputedRef<BasicTableProps>, actions:
   const total = ref(0)
   // 表格请求参数
   const tableRequestParams = ref<Global.Recordable>({})
+
+  // 修改表格请求参数
+  function refreshTableRequestParams (obj: Global.Recordable) {
+    tableRequestParams.value = { ...unref(tableRequestParams), ...obj }
+  }
   // 监听外部传入的表格数据变更
   watch(() => innerProps.value.tableData, () => {
     console.log('表格数据变了')
@@ -87,6 +93,7 @@ export function useSourceData (innerProps:ComputedRef<BasicTableProps>, actions:
     getTableData,
     total,
     tableRequestParams,
-    fetchTableData
+    fetchTableData,
+    refreshTableRequestParams
   }
 }

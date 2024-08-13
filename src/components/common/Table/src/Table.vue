@@ -1,5 +1,9 @@
 <template>
   <div class="table-wrapper">
+    <SearchForm :schemas="searchArr" v-if="searchArr.length && getProps.showSearch"/>
+    <div class="operate-wrapper-box" v-if="getProps.showOperate">
+      <el-button type="primary" @click="handleAdd">添加</el-button>
+    </div>
     <div class="table-wrapper-box">
       <vxe-table
         ref="VxeTableRef"
@@ -108,6 +112,19 @@ import type { VxeTableProps, VxeColumnProps } from 'vxe-table'
 import { Common } from '@/types'
 import { useSort } from '@/components/common/Table/src/hooks/useSort.ts'
 
+interface PropsType {
+  schemas?: Common.BasicForm[]
+}
+const props = withDefaults(defineProps<PropsType>(), {})
+const searchArr = ref<Common.BasicForm[]>([])
+onMounted(() => {
+  if (props.schemas) {
+    innerProps.value.schemas = props.schemas
+    // 只取search为true的
+    searchArr.value = props.schemas.filter(item => item.search)
+  }
+})
+
 const VxeTableRef = ref()
 
 // 当前外部使用table组件时通过useTable传入的一些参数（BasicTableProps）
@@ -131,7 +148,7 @@ const { getPaginationInfo, sizeChange, currentChange } = usePagination(getProps,
 // 处理表头数据-----hooks
 let { getColumns } = useColumns(getProps)
 // 处理表格数据-----hooks
-let { getTableData, total, fetchTableData, tableRequestParams } = useSourceData(getProps, { setLoading, getPaginationInfo, VxeTableRef })
+let { getTableData, total, fetchTableData, tableRequestParams, refreshTableRequestParams } = useSourceData(getProps, { setLoading, getPaginationInfo, VxeTableRef })
 // 处理表格选中-----hooks
 const { selectedData, dealPageSelected, toggleCheckboxEvent, selectAllEvent, clearAllCheckbox } = useCheckbox({ VxeTableRef, getTableData })
 // 处理表格字段排序-----hooks
@@ -151,7 +168,6 @@ const getBindingVTable = computed<VxeTableProps>(() => {
     showOverflow: true, // 设置所有内容过长时显示为省略号
     height: 'auto',
     autoResize: true,
-    rowConfig: { isHover: true },
     sortConfig: unref(getProps).sortConfig, // 表格排序配置
     'scroll-y': unref(getProps).openVirtual ? { enabled: true, gt: 49 } : undefined, // 只针对纵向，横向字段不会太多,当开启了虚拟表格，当一页>=50就启用
     seqConfig: {
@@ -169,7 +185,8 @@ const getBindingVTable = computed<VxeTableProps>(() => {
 function getBindingVColumn (column: Common.BasicForm): VxeColumnProps {
   return {
     field: column.key,
-    align: 'center',
+    align: column.align || unref(innerProps).align,
+    headerAlign: column.headerAlign || unref(innerProps).headerAlign,
     title: column.title,
     width: column.width || '', // 没传的时候，不设置width，按照表格的宽度进行均匀分配
     minWidth: column.minWidth || '100px',
@@ -182,16 +199,22 @@ function getBindingVColumn (column: Common.BasicForm): VxeColumnProps {
 }
 
 // 重新设置新的参数
-function setProps (propsData: BasicTableProps) {
+function setTableProps (propsData: BasicTableProps) {
   innerProps.value = { ...unref(innerProps), ...propsData }
+}
+// 获取选中的数据
+function getSelectRecords () {
+  return selectedData.value
 }
 
 // 可被外部执行的一些方法
 const tableAction: TableActionType = {
-  setProps,
-  setLoading,
+  setTableProps, // 设置表格组件需要的参数
+  setLoading, // 开启loading
   getSelectRecords, // 获取选中的数据
-  clearAllCheckbox // 清空所有数据选中
+  clearAllCheckbox, // 清空所有数据选中
+  refreshTableRequestParams, // 刷新表格请求参数
+  fetchTableData // 请求表格
 }
 
 const emits = defineEmits<EmitEvent>()
@@ -205,9 +228,9 @@ function dealShowVal (val: any) {
   return val
 }
 
-// 获取选中的数据
-function getSelectRecords () {
-  return selectedData.value
+// 新增数据
+function handleAdd () {
+  
 }
 
 </script>
@@ -217,6 +240,9 @@ function getSelectRecords () {
   min-height: 300px;
   display: flex;
   flex-direction: column;
+  .operate-wrapper-box {
+    margin: 12px 0;
+  }
   &-box {
     flex: 1;
     overflow: hidden;

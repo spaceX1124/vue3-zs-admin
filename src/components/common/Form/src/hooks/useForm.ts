@@ -12,12 +12,12 @@ export function useForm (formProps?: BasicFormProps): [(tableAction: FormActionT
   // 初始化方法，方便在外部使用
   function registerForm (tableAction: FormActionType) {
     tableActionRef.value = tableAction
-    formProps && tableAction.setProps(formProps)
+    formProps && tableAction.setFormProps(formProps)
   }
 
   const methods:FormActionType = {
-    setProps: (tableProps) => {
-      tableActionRef.value?.setProps(tableProps)
+    setFormProps: (tableProps) => {
+      tableActionRef.value?.setFormProps(tableProps)
     },
     setFormModelValue: (key, value, schema) => {
       tableActionRef.value?.setFormModelValue(key, value, schema)
@@ -27,6 +27,12 @@ export function useForm (formProps?: BasicFormProps): [(tableAction: FormActionT
     },
     updateSchema: (schema) => {
       tableActionRef.value?.updateSchema(schema)
+    },
+    clearFormValues: () => {
+      tableActionRef.value?.clearFormValues()
+    },
+    submit: async () => {
+      return tableActionRef.value?.submit()
     }
   }
 

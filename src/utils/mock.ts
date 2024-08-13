@@ -1,4 +1,5 @@
 import Mock from 'mockjs'
+
 // 随机方法
 const Random = Mock.Random
 // 延时200-600毫秒请求到数据
@@ -7,7 +8,7 @@ Mock.setup({
 })
 Mock.mock('/api/pageList', 'post', (data) => {
   // 定义这个接口的总数
-  const total = 370
+  const total = 372
   const postData = JSON.parse(data.body)
   console.log(postData, 'postData')
   // 向上取整，一页10条->4页，一页20条->2页，一页30条->2页，一页40条->1页
@@ -15,6 +16,7 @@ Mock.mock('/api/pageList', 'post', (data) => {
   // 取余，一页10条->7，一页20条->17，一页30条->7，一页40条->37
   const remainder = total % postData.pageSize
   const loopNum = postData.pageNum < pages ? postData.pageSize : remainder
+  console.log('loopNum', loopNum)
   // 'data|10',我不知道怎么写这个变量，只能通过if判断了
   const { list } = Mock.mock({
     [`list|${loopNum}`]: [

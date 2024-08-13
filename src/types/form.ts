@@ -85,6 +85,8 @@ interface BaseFormSchema<T extends ComponentType = any> {
     splitStyle?: string; // 控制表格多个内容回显如何连接，如，篮球/足球
     fixed?: 'left' | 'right' // 表格列固定
     sortable?: boolean; // 表格，该字段是否开启排序
+    align?: 'left' | 'center' |'right'; // 内容对齐方式
+    headerAlign?: 'left' | 'center' | 'right'; // 表头对齐方式
 }
 interface ComponentFormSchema<T extends ComponentType = any> extends BaseFormSchema<T> {
     component: T; // 组件必传，不管是表格还是表单，都需要表明是什么组件，因为在渲染或者在处理值的时候要依赖是什么组件

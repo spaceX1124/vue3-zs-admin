@@ -22,8 +22,8 @@ interface ActionType {
  * @param {ActionType} actions
  * */
 export function useFormEvent (formProps: ComputedRef<BasicFormProps>, actions: ActionType) {
-  // 不要结构formProps，导致失去响应性了
-  const { schemaRef, formModel, ElFormRef, emit } = actions
+  // 不要解构formProps，导致失去响应性了
+  const { schemaRef, formModel, ElFormRef } = actions
   // 设置表单值 {key1:123}，可多个设置
   function setFieldsValue (values: Global.Recordable) {
     if (Object.keys(values).length === 0) {
@@ -60,7 +60,6 @@ export function useFormEvent (formProps: ComputedRef<BasicFormProps>, actions: A
       const postData: Global.Recordable = {}
       unref(actions.showSchemas).forEach(item => {
         const { key, keyArr } = item
-
         if (key) {
           const value = JSON.parse(JSON.stringify(formModel[key]))
           // 多个值对应多个key
@@ -80,17 +79,18 @@ export function useFormEvent (formProps: ComputedRef<BasicFormProps>, actions: A
             postData[key] = value
           }
         }
-
       })
-      console.log(postData, 'postData111')
-      emit('submit', postData)
+      return postData
     }catch (err) {
       console.log(err, 'err1')
     }
   }
   // 清空表单值
-  function clearForm () {
-    
+  function clearFormValues () {
+    unref(actions.showSchemas).forEach(item => {
+      const { key } = item
+      formModel[key] = ''
+    })
   }
 
   // 更新一个或多个字段的配置，以达到控制字段的特性
@@ -122,7 +122,6 @@ export function useFormEvent (formProps: ComputedRef<BasicFormProps>, actions: A
         newSchema.push({ ...val })
       }
     })
-    console.log(newSchema, 'newSchema')
     // 刷新字段列表
     schemaRef.value = uniqBy(newSchema, 'key')
   }
@@ -132,6 +131,6 @@ export function useFormEvent (formProps: ComputedRef<BasicFormProps>, actions: A
     validate,
     resetFields,
     updateSchema,
-    clearForm
+    clearFormValues
   }
 }
