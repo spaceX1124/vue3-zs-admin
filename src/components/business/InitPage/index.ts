@@ -1,2 +1,3 @@
 import InitPage from './src/InitPage.vue'
-export { InitPage }
+import type { HttpType } from './src/types/index.ts'
+export { InitPage, type HttpType }

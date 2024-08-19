@@ -1,18 +1,18 @@
 import { Ref } from 'vue'
 
 interface ActionType {
-   fetchTableData: Global.PromiseFn;
-   tableRequestParams: Ref<Global.Recordable>;
+  fetchTableData: Global.PromiseFn
+  tableRequestParams: Ref<Global.Recordable>
 }
 
 interface Result {
-   sortChangeEvent: Global.PromiseFn;
+  sortChangeEvent: Global.PromiseFn
 }
 
-export function useSort (actions: ActionType): Result {
+export function useSort(actions: ActionType): Result {
   const { tableRequestParams, fetchTableData } = actions
   // 修改字段排序
-  async function sortChangeEvent (e: any) {
+  async function sortChangeEvent(e: any) {
     // 拿到当前排序字段
     const { field, order } = e
     // 处理请求参数
@@ -25,6 +25,6 @@ export function useSort (actions: ActionType): Result {
     await fetchTableData()
   }
   return {
-    sortChangeEvent
+    sortChangeEvent,
   }
 }

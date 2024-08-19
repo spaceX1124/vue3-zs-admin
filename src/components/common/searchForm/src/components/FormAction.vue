@@ -2,7 +2,7 @@
   <div class="search-btn-box">
     <el-button type="primary" @click="handleSubmit">搜索</el-button>
     <el-button @click="handleClear">清空</el-button>
-    <el-button type="text" @click="handleExpand">{{expand ? '展开' : '收起'}}
+    <el-button type="primary" text @click="handleExpand">{{expand ? '展开' : '收起'}}
       <el-icon :size="14">
         <ArrowDown v-show="expand"/>
         <ArrowUp v-show="!expand"/>

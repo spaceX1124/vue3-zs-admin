@@ -4,7 +4,7 @@
       <el-button type="primary" @click="getSelection">获取选中项数据</el-button>
       <el-button type="primary" @click="clearAll">清空所有选中项</el-button>
     </div>
-    <Table @registerTable="registerTable"/>
+    <Table @registerTable="registerTable" />
   </div>
 </template>
 <script lang="ts" setup>
@@ -18,12 +18,12 @@ const [registerTable, { getSelectRecords, clearAllCheckbox }] = useTable({
   },
   openCheckbox: true
 })
-function getSelection () {
+function getSelection() {
   let list = getSelectRecords()
   console.log(list, '选中数据')
   ElMessage.info('数据看控制台')
 }
-function clearAll () {
+function clearAll() {
   clearAllCheckbox()
   ElMessage.success('全部清空了')
 }

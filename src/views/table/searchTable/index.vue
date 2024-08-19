@@ -1,25 +1,11 @@
 <template>
-  <div class="table-page">
-    <Table @registerTable="registerTable" :schemas="schemas"/>
-  </div>
+  <InitPage :http="httpData" :schemas="schemas" :add-options="{ width: '500px' }" a="111" />
 </template>
 <script lang="ts" setup>
-import { Table, useTable } from '@/components/common/Table'
+import { InitPage, HttpType } from '@/components/business/InitPage'
 import { schemas } from './main.ts'
-const [registerTable] = useTable({
-  async: {
-    url: '/pageList'
-  },
-  showOperate: true,
-  showSearch: true
+const httpData = ref<HttpType>({
+  pageList: '/pageList'
 })
 </script>
-<style lang="scss" scoped>
-.table-page {
-  padding: 16px;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-</style>
+<style lang="scss" scoped></style>

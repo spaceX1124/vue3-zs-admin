@@ -28,6 +28,7 @@ export interface BasicTableProps {
     tableData?: Global.Recordable[]; // 表格数据
     async?: { // 异步请求
         url: string; // 接口地址
+        method?: string;
         data?: Global.Recordable // 接口所需部分参数
     };
     seqHidden?: boolean; // 隐藏序号
@@ -51,7 +52,8 @@ export interface TableActionType {
     setLoading: Global.Fn<boolean, void>;
     getSelectRecords:Global.Fn<undefined, Global.Recordable[]>;
     clearAllCheckbox: Global.Fn;
-    refreshTableRequestParams: Global.Fn;
+    refreshSearchRequestParams: (data: Global.Recordable) => void; // 刷新快捷搜索字段参数
+    clearSearchRequestParams: Global.Fn
     fetchTableData: Global.Fn;
 }
 

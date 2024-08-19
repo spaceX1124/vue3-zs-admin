@@ -1,16 +1,12 @@
 <template>
-  <el-form v-bind="getBindingElForm"
-           :model="formModel"
-           ref="ElFormRef"
-           class="custom-form">
-    <el-row v-bind="getBindingElRow">
+  <el-form v-bind="getBindingElForm" :model="formModel" ref="ElFormRef" class="custom-form">
+    <el-row v-bind="getBindingElRow" :style="getProps.openGrid ? getProps.gridStyle : null">
       <template v-for="schema in showSchemas" :key="schema.key">
         <FormItem
           :schema="schema"
           :formProps="getProps"
           :formModel="formModel"
-          :setFormModelValue="setFormModelValue"
-        />
+          :setFormModelValue="setFormModelValue" />
       </template>
     </el-row>
   </el-form>
@@ -32,7 +28,7 @@ const ElFormRef = ref<FormInstance | null>(null)
 const schemaRef = ref<Common.BasicForm[]>([])
 
 // 修改表单中的值
-function setFormModelValue (key: string, value: any): void {
+function setFormModelValue(key: string, value: any): void {
   formModel[key] = value
 }
 
@@ -48,7 +44,7 @@ let getProps = computed(() => {
 const showSchemas = computed(() => {
   const schemas = cloneDeep(unref(schemaRef).length ? unref(schemaRef) : unref(getProps).schemas)
   // 处理可显示的字段
-  const showList = schemas?.filter(schema => {
+  const showList = schemas?.filter((schema) => {
     // 如果是函数将更新字段方法传入
     if (schema.componentEmits && isFunc(schema.componentEmits)) {
       schema.componentEmits = schema.componentEmits({ updateSchema })
@@ -62,19 +58,19 @@ const showSchemas = computed(() => {
 const getBindingElForm = computed(() => {
   return {
     labelPosition: unref(getProps).labelPosition || 'top',
-    labelWidth: '130px'
+    labelWidth: '130px',
   }
 })
 // 给el-row绑定的一些参数
 const getBindingElRow = computed(() => {
   return {
-    gutter: unref(getProps).gutter || 20// 栅格间隔,默认是20
+    gutter: unref(getProps).gutter || 20, // 栅格间隔,默认是20
   }
 })
 
 // 初始化值相关
 const { initDefault } = useFormValues(getProps, {
-  formModel
+  formModel,
 })
 // 操作表单数据相关方法
 const { setFieldsValue, submit, updateSchema, clearFormValues } = useFormEvent(getProps, {
@@ -82,14 +78,14 @@ const { setFieldsValue, submit, updateSchema, clearFormValues } = useFormEvent(g
   ElFormRef,
   emit,
   schemaRef,
-  showSchemas
+  showSchemas,
 })
 
 // 设置外部传递进来的参数
-function setFormProps (propsData: BasicFormProps) {
-  console.log('0000', propsData)
+function setFormProps(propsData: BasicFormProps) {
+  console.log(propsData, 'propsData22')
   innerProps.value = deepMerge(unref(innerProps), propsData)
-  console.log(innerProps, 'innerProps123')
+  console.log(innerProps, 'innerProps11')
 }
 
 const formAction: FormActionType = {
@@ -98,7 +94,7 @@ const formAction: FormActionType = {
   setFieldsValue, // 手动为某些字段设置值
   updateSchema, // 更新一个或多个字段列表
   clearFormValues, // 清除表单中的所有值
-  submit
+  submit,
 }
 emit('registerForm', formAction)
 

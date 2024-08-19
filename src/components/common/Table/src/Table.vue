@@ -1,15 +1,7 @@
 <template>
   <div class="table-wrapper">
-    <SearchForm :schemas="searchArr" v-if="searchArr.length && getProps.showSearch"/>
-    <div class="operate-wrapper-box" v-if="getProps.showOperate">
-      <el-button type="primary" @click="handleAdd">添加</el-button>
-    </div>
     <div class="table-wrapper-box">
-      <vxe-table
-        ref="VxeTableRef"
-        v-bind="getBindingVTable"
-        @sort-change="sortChangeEvent"
-      >
+      <vxe-table ref="VxeTableRef" v-bind="getBindingVTable" @sort-change="sortChangeEvent">
         <template #loading>
           <div class="loading-box">
             <el-icon class="is-loading" size="28px">
@@ -20,46 +12,31 @@
         </template>
         <template #empty>
           <div class="emptyBox">
-            <img src="@/assets/images/noData.png" alt="">
+            <img src="@/assets/images/noData.png" alt="" />
             <p>这里暂时没有内容哦～</p>
           </div>
         </template>
-        <vxe-column
-          v-if="getProps.openCheckbox"
-          width="50"
-          type="checkbox"
-          align="center"
-          fixed="left">
+        <vxe-column v-if="getProps.openCheckbox" width="50" type="checkbox" align="center" fixed="left">
           <template #header="{ checked, indeterminate }">
             <el-checkbox
               :modelValue="checked"
               :indeterminate="indeterminate"
               @change="(val: string | number | boolean) =>
                 selectAllEvent(val)
-              "
-            />
+              " />
           </template>
           <template #checkbox="{ row, checked }">
-            <el-checkbox
-              :modelValue="checked"
-              @change="toggleCheckboxEvent(row)"
-            />
+            <el-checkbox :modelValue="checked" @change="toggleCheckboxEvent(row)" />
           </template>
         </vxe-column>
-        <vxe-column
-          type="seq"
-          title="序号"
-          fixed="left"
-          width="50"/>
+        <vxe-column type="seq" title="序号" fixed="left" width="50" />
         <vxe-column
           v-for="column in showColumns"
           :key="column.key"
           v-bind="getBindingVColumn(column)"
-          :class-name="() => column.lineClamp && column.lineClamp > 1 ? 'custom123': ''">
+          :class-name="() => (column.lineClamp && column.lineClamp > 1 ? 'custom123' : '')">
           <template v-slot="scope">
-            <CellRender v-if="column.cellRender"
-                        :scope="scope"
-                        :column="column"/>
+            <CellRender v-if="column.cellRender" :scope="scope" :column="column" />
             <template v-else-if="column.text">
               <template v-if="column.lineClamp && column.lineClamp > 1">
                 <el-tooltip :content="dealShowVal(column.text(scope.row))" placement="top">
@@ -71,7 +48,7 @@
               </template>
             </template>
             <template v-else>
-              {{dealShowVal(scope.row[column.key])}}
+              {{ dealShowVal(scope.row[column.key]) }}
             </template>
           </template>
         </vxe-column>
@@ -91,13 +68,15 @@
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
         @size-change="sizeChange"
-        @current-change="currentChange"
-      />
+        @current-change="currentChange" />
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
+import { VxeTable, VxeColumn } from 'vxe-table'
+import 'vxe-pc-ui/lib/style.css'
+import 'vxe-table/lib/style.css'
 import { ref } from 'vue'
 import { BasicTableProps, EmitEvent, TableActionType } from './types/table.ts'
 import { useSourceData } from './hooks/useSourceData.ts'
@@ -117,11 +96,14 @@ interface PropsType {
 }
 const props = withDefaults(defineProps<PropsType>(), {})
 const searchArr = ref<Common.BasicForm[]>([])
+const formArr = ref<Common.BasicForm[]>([])
 onMounted(() => {
   if (props.schemas) {
     innerProps.value.schemas = props.schemas
     // 只取search为true的
-    searchArr.value = props.schemas.filter(item => item.search)
+    searchArr.value = props.schemas.filter((item) => item.search)
+    // 只取不屏蔽formHidden的字段
+    formArr.value = props.schemas.filter((item) => !item.formHidden)
   }
 })
 
@@ -136,9 +118,11 @@ let getProps = computed(() => {
 })
 // 处理表格加载状态-----hooks
 const { getLoading, setLoading } = useLoading()
+
 // 处理分页-----hooks
 const { getPaginationInfo, sizeChange, currentChange } = usePagination(getProps, {
-  fetchTableData: async () => { // 如果直接写fetchTableData，会存在变量为声明问题，只能写一个callback
+  fetchTableData: async () => {
+    // 如果直接写fetchTableData，会存在变量为声明问题，只能写一个callback
     await fetchTableData()
   },
   dealPageSelected: () => {
@@ -148,9 +132,13 @@ const { getPaginationInfo, sizeChange, currentChange } = usePagination(getProps,
 // 处理表头数据-----hooks
 let { getColumns } = useColumns(getProps)
 // 处理表格数据-----hooks
-let { getTableData, total, fetchTableData, tableRequestParams, refreshTableRequestParams } = useSourceData(getProps, { setLoading, getPaginationInfo, VxeTableRef })
+let { getTableData, total, fetchTableData, tableRequestParams, refreshSearchRequestParams, clearSearchRequestParams } =
+  useSourceData(getProps, { setLoading, getPaginationInfo, VxeTableRef })
 // 处理表格选中-----hooks
-const { selectedData, dealPageSelected, toggleCheckboxEvent, selectAllEvent, clearAllCheckbox } = useCheckbox({ VxeTableRef, getTableData })
+const { selectedData, dealPageSelected, toggleCheckboxEvent, selectAllEvent, clearAllCheckbox } = useCheckbox({
+  VxeTableRef,
+  getTableData
+})
 // 处理表格字段排序-----hooks
 const { sortChangeEvent } = useSort({ fetchTableData, tableRequestParams })
 
@@ -172,7 +160,7 @@ const getBindingVTable = computed<VxeTableProps>(() => {
     'scroll-y': unref(getProps).openVirtual ? { enabled: true, gt: 49 } : undefined, // 只针对纵向，横向字段不会太多,当开启了虚拟表格，当一页>=50就启用
     seqConfig: {
       // 这是序号值，主要是分页之后
-      seqMethod ({ rowIndex }) {
+      seqMethod({ rowIndex }) {
         return (unref(getPaginationInfo).pageNum - 1) * unref(getPaginationInfo).pageSize + rowIndex + 1
       }
     },
@@ -182,7 +170,7 @@ const getBindingVTable = computed<VxeTableProps>(() => {
 })
 
 // 给vxe-column绑定的一些参数
-function getBindingVColumn (column: Common.BasicForm): VxeColumnProps {
+function getBindingVColumn(column: Common.BasicForm): VxeColumnProps {
   return {
     field: column.key,
     align: column.align || unref(innerProps).align,
@@ -199,11 +187,11 @@ function getBindingVColumn (column: Common.BasicForm): VxeColumnProps {
 }
 
 // 重新设置新的参数
-function setTableProps (propsData: BasicTableProps) {
+function setTableProps(propsData: BasicTableProps) {
   innerProps.value = { ...unref(innerProps), ...propsData }
 }
 // 获取选中的数据
-function getSelectRecords () {
+function getSelectRecords() {
   return selectedData.value
 }
 
@@ -213,7 +201,8 @@ const tableAction: TableActionType = {
   setLoading, // 开启loading
   getSelectRecords, // 获取选中的数据
   clearAllCheckbox, // 清空所有数据选中
-  refreshTableRequestParams, // 刷新表格请求参数
+  refreshSearchRequestParams, // 刷新快捷搜索字段参数
+  clearSearchRequestParams, // 清空快捷搜索字段参数
   fetchTableData // 请求表格
 }
 
@@ -221,18 +210,12 @@ const emits = defineEmits<EmitEvent>()
 emits('registerTable', tableAction)
 
 // 处理表格回显值
-function dealShowVal (val: any) {
+function dealShowVal(val: any) {
   if (isNullOrUndefOrEmpty(val)) {
     return '-'
   }
   return val
 }
-
-// 新增数据
-function handleAdd () {
-  
-}
-
 </script>
 <style lang="scss" scoped>
 .table-wrapper {
@@ -240,18 +223,15 @@ function handleAdd () {
   min-height: 300px;
   display: flex;
   flex-direction: column;
-  .operate-wrapper-box {
-    margin: 12px 0;
-  }
   &-box {
     flex: 1;
     overflow: hidden;
   }
-  :deep(.custom123){
+  :deep(.custom123) {
     .c--ellipsis {
-      overflow: visible!important;
-      text-overflow: clip!important;
-      white-space: normal!important;
+      overflow: visible !important;
+      text-overflow: clip !important;
+      white-space: normal !important;
     }
   }
 }
@@ -268,19 +248,18 @@ function handleAdd () {
   align-items: center;
   color: $primary-color1;
 }
-.emptyBox{
+.emptyBox {
   padding: 20px 0;
   text-align: center;
-  img{
+  img {
     width: 25%;
     min-width: 120px;
     max-width: 216px;
     height: auto;
   }
-  p{
+  p {
     color: $primary-color3;
     line-height: 18px;
   }
 }
-
 </style>

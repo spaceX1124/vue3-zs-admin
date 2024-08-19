@@ -10,7 +10,7 @@
       <el-button type="primary" @click="alignContent('center')">内容居中</el-button>
       <el-button type="primary" @click="alignContent('right')">内容右对齐</el-button>
     </div>
-    <Table @registerTable="registerTable"/>
+    <Table @registerTable="registerTable" />
   </div>
 </template>
 <script lang="ts" setup>
@@ -22,20 +22,20 @@ const [registerTable, { setTableProps, fetchTableData }] = useTable({
     url: '/pageList'
   }
 })
-function empty () {
+function empty() {
   setTableProps({
     tableData: []
   })
 }
-function fetch () {
+function fetch() {
   fetchTableData()
 }
-function alignHeader (align: 'left' | 'center' | 'right') {
+function alignHeader(align: 'left' | 'center' | 'right') {
   setTableProps({
     headerAlign: align
   })
 }
-function alignContent (align: 'left' | 'center' | 'right') {
+function alignContent(align: 'left' | 'center' | 'right') {
   setTableProps({
     align
   })

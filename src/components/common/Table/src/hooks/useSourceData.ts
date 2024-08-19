@@ -3,16 +3,17 @@ import { ComputedRef } from 'vue'
 import { http } from '@/utils/http'
 
 interface ActionType {
-  setLoading: (loading: boolean) => void;
-  getPaginationInfo: ComputedRef<PaginationInfo>;
-  VxeTableRef: Ref<any>;
+  setLoading: (loading: boolean) => void
+  getPaginationInfo: ComputedRef<PaginationInfo>
+  VxeTableRef: Ref<any>
 }
 interface Result {
-  getTableData: ComputedRef<Global.Recordable[]>;
-  total: Ref<number>;
-  tableRequestParams: Ref<Global.Recordable>;
-  fetchTableData: Global.PromiseFn<void>;
-  refreshTableRequestParams: Global.Fn
+  getTableData: ComputedRef<Global.Recordable[]>
+  total: Ref<number>
+  tableRequestParams: Ref<Global.Recordable>
+  fetchTableData: Global.PromiseFn<void>
+  refreshSearchRequestParams: Global.Fn
+  clearSearchRequestParams: Global.Fn
 }
 
 /**
@@ -21,39 +22,48 @@ interface Result {
  * @param {ActionType} actions 额外需要的一些参数
  * @return {Result} 需要暴露给外面的一些数据和方法
  * */
-export function useSourceData (innerProps:ComputedRef<BasicTableProps>, actions: ActionType): Result {
+export function useSourceData(innerProps: ComputedRef<BasicTableProps>, actions: ActionType): Result {
   const { setLoading, getPaginationInfo, VxeTableRef } = actions
   // 表格数据
   const tableDataRef = ref<Global.Recordable[]>([])
   // 表格总数
   const total = ref(0)
-  // 表格请求参数
+  // 表格请求的所有参数
   const tableRequestParams = ref<Global.Recordable>({})
+  // 快捷快捷搜索字段参数
+  const searchRequestParams = ref<Global.Recordable>({})
 
-  // 修改表格请求参数
-  function refreshTableRequestParams (obj: Global.Recordable) {
-    tableRequestParams.value = { ...unref(tableRequestParams), ...obj }
+  // 修改快捷搜索字段参数
+  function refreshSearchRequestParams(obj: Global.Recordable) {
+    searchRequestParams.value = { ...unref(searchRequestParams), ...obj }
   }
+  // 清空快捷搜索字段参数
+  function clearSearchRequestParams() {
+    searchRequestParams.value = {}
+  }
+
   // 监听外部传入的表格数据变更
-  watch(() => innerProps.value.tableData, () => {
-    console.log('表格数据变了')
-    setLoading(false)
-    const { tableData } = unref(innerProps)
-    tableData && (tableDataRef.value = tableData)
-  })
+  watch(
+    () => innerProps.value.tableData,
+    () => {
+      console.log('表格数据变了')
+      setLoading(false)
+      const { tableData } = unref(innerProps)
+      tableData && (tableDataRef.value = tableData)
+    }
+  )
   // 表格数据
-  const getTableData = computed(() => ([...unref(tableDataRef)]))
+  const getTableData = computed(() => [...unref(tableDataRef)])
   onMounted(async () => {
-    if(innerProps.value.async) {
+    if (innerProps.value.async) {
       await fetchTableData()
     }
   })
   // 接口获取表格数据
-  async function fetchTableData () {
-    console.log(getPaginationInfo, 'getPaginationInfo123')
+  async function fetchTableData() {
     // 处理请求参数;
     tableRequestParams.value = {
-      ...unref(tableRequestParams),
+      ...unref(searchRequestParams),
       pageSize: getPaginationInfo.value.pageSize,
       pageNum: getPaginationInfo.value.pageNum,
       ...innerProps.value.async?.data
@@ -70,17 +80,17 @@ export function useSourceData (innerProps:ComputedRef<BasicTableProps>, actions:
       // 拿到数据
       tableDataRef.value = res.records
       total.value = res.total
-    }catch (e) {
+    } catch (e) {
       tableDataRef.value = []
       total.value = 0
-    }finally {
+    } finally {
       setLoading(false)
       await tableScrollTop()
     }
   }
 
   // 数据刷新将表格滚动条回到顶部
-  async function tableScrollTop () {
+  async function tableScrollTop() {
     const $table = VxeTableRef.value
     if ($table) {
       await nextTick()
@@ -94,6 +104,7 @@ export function useSourceData (innerProps:ComputedRef<BasicTableProps>, actions:
     total,
     tableRequestParams,
     fetchTableData,
-    refreshTableRequestParams
+    refreshSearchRequestParams,
+    clearSearchRequestParams
   }
 }

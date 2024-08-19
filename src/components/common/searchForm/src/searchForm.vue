@@ -10,29 +10,33 @@
 import { Form, useForm } from '@/components/common/Form'
 import { Common } from '@/types'
 import FormAction from './components/FormAction.vue'
+import { isNullOrUndefOrEmpty } from '@/utils/is'
 
 interface PropsType {
   schemas: Common.BasicForm[]
 }
 const props = withDefaults(defineProps<PropsType>(), {})
+const emit = defineEmits(['clearForm', 'search'])
 const [registerForm, { clearFormValues, submit }] = useForm({
-  schemas: props.schemas,
+  schemas: props.schemas.filter(item => item.search), // 只取可搜索字段
   labelPosition: 'right'
 })
 // 清空表单
 function clearForm () {
   clearFormValues()
+  emit('clearForm')
 }
 // 点击搜索
 async function handleSearch () {
   const postData = await submit()
-  console.log(postData, 'postData123')
+  // 过滤掉无空值的字段
+  const arr = Object.entries(postData || {}).filter(([key, value]) => !isNullOrUndefOrEmpty(value))
+  emit('search', Object.fromEntries(arr))
 }
 // 折叠状态
 let expandStatus = ref(true)
 // 展开，折叠
 function expand (val: boolean) {
-  console.log(val, 'val')
   expandStatus.value = val
 }
 

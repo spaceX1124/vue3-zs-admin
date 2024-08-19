@@ -14,7 +14,7 @@
     "allowJs": true, // 允许编译器编译JS，JSX文件，在.ts文件中可以引入js文件
 
     /* Bundler mode */
-    "moduleResolution": "bundler",
+    "moduleResolution": "Node",
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,

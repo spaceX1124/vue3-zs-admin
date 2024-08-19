@@ -5,9 +5,7 @@ export const schemas: Common.BasicForm[] = [
     key: 'key13',
     title: '单选',
     component: 'BasicTitle',
-    colSpan: {
-      span: 24
-    }
+    colSpan: 24
   },
   {
     key: 'key1',
@@ -17,7 +15,8 @@ export const schemas: Common.BasicForm[] = [
       { label: '选项1', value: 0 },
       { label: '选项2', value: 1 },
       { label: '选项3', value: 2 }
-    ]
+    ],
+    colSpan: 12
   },
   {
     key: 'key2',
@@ -176,9 +175,7 @@ export const schemas: Common.BasicForm[] = [
     key: 'key14',
     title: '多选',
     component: 'BasicTitle',
-    colSpan: {
-      span: 24
-    }
+    colSpan: 24
   },
   {
     key: 'key231',

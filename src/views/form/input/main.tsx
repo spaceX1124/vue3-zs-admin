@@ -4,6 +4,7 @@ import { Common } from '@/types'
 
 export const schemas:Common.BasicForm[] = [
   {
+    key: 'title1',
     title: '单行文本',
     component: 'BasicTitle',
     colSpan: 24
@@ -213,6 +214,7 @@ export const schemas:Common.BasicForm[] = [
     }
   },
   {
+    key: 'title2',
     title: '多行文本',
     component: 'BasicTitle',
     colSpan: {

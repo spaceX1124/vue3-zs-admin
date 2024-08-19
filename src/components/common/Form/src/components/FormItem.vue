@@ -39,12 +39,12 @@ const component = computed(() => {
 })
 // 给el-col绑定一些参数
 const getBindingElCol = computed(() => {
+  console.log(props.formProps, 'props.formProps')
   // 字段的布局配置
-  const { colSpan } = props.schema
+  const { colSpan, gridColumn } = props.schema
   // 表单的布局配置
-  const { baseColspan } = props.formProps
-  // 如果不由外部控制col占比，那就设定成响应式的
-  let colProps: ColEx = { span: 12 }
+  const { baseColspan, openGrid, openLayout } = props.formProps
+  let colProps: ColEx = { span: 24 }
   // 表单配置控制当前字段布局展示
   if (!isNullOrUndefOrEmpty(baseColspan)) {
     if (isNumber(baseColspan)) {
@@ -53,13 +53,6 @@ const getBindingElCol = computed(() => {
     if (isObj(baseColspan)) {
       colProps = { ...baseColspan }
     }
-  } else {
-    // 设定成响应式的
-    colProps.xs = 24 // <768px
-    colProps.sm = 24 // ≥768px
-    colProps.md = 12 // ≥992px
-    colProps.lg = 8 // ≥1200px，一行展示3个
-    colProps.xl = 6 // ≥1920px，一行展示4个
   }
   // 字段自身自定义控制自己的布局
   if (isNumber(colSpan)) {
@@ -68,9 +61,15 @@ const getBindingElCol = computed(() => {
   if (isObj(colSpan)) {
     colProps = { ...colProps, ...colSpan }
   }
-
-  return {
-    ...colProps
+  // 开启了栅格布局
+  if(openLayout) {
+    return colProps
+  }
+  // 开启了grid布局
+  if (openGrid) {
+    return {
+      style: gridColumn
+    }
   }
 })
 
@@ -123,11 +122,3 @@ function getRules () {
 }
 
 </script>
-
-<style lang="scss" scoped>
-//@media screen and (min-width: 1920px) {
-//  .component-item {
-//    width: 20%!important;
-//  }
-//}
-</style>
