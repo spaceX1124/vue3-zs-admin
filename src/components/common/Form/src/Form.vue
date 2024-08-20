@@ -1,12 +1,14 @@
 <template>
   <el-form v-bind="getBindingElForm" :model="formModel" ref="ElFormRef" class="custom-form">
-    <el-row v-bind="getBindingElRow" :style="getProps.openGrid ? getProps.gridStyle : null">
+    <div>rowWidth:{{ rowWidth }}</div>
+    <el-row ref="rowRef" v-bind="getBindingElRow">
       <template v-for="schema in showSchemas" :key="schema.key">
         <FormItem
           :schema="schema"
           :formProps="getProps"
           :formModel="formModel"
-          :setFormModelValue="setFormModelValue" />
+          :setFormModelValue="setFormModelValue"
+          :rowWidth="rowWidth" />
       </template>
     </el-row>
   </el-form>
@@ -58,19 +60,25 @@ const showSchemas = computed(() => {
 const getBindingElForm = computed(() => {
   return {
     labelPosition: unref(getProps).labelPosition || 'top',
-    labelWidth: '130px',
+    labelWidth: '130px'
   }
 })
 // 给el-row绑定的一些参数
 const getBindingElRow = computed(() => {
   return {
     gutter: unref(getProps).gutter || 20, // 栅格间隔,默认是20
+    style: unref(getProps).openGrid
+      ? {
+          display: 'grid',
+          gridTemplateColumns: `repeat(auto-fit, minmax(${unref(getProps).gridTemplateColumns || 300}px, 1fr))`
+        }
+      : null
   }
 })
 
 // 初始化值相关
 const { initDefault } = useFormValues(getProps, {
-  formModel,
+  formModel
 })
 // 操作表单数据相关方法
 const { setFieldsValue, submit, updateSchema, clearFormValues } = useFormEvent(getProps, {
@@ -78,7 +86,7 @@ const { setFieldsValue, submit, updateSchema, clearFormValues } = useFormEvent(g
   ElFormRef,
   emit,
   schemaRef,
-  showSchemas,
+  showSchemas
 })
 
 // 设置外部传递进来的参数
@@ -94,11 +102,25 @@ const formAction: FormActionType = {
   setFieldsValue, // 手动为某些字段设置值
   updateSchema, // 更新一个或多个字段列表
   clearFormValues, // 清除表单中的所有值
-  submit,
+  submit
 }
 emit('registerForm', formAction)
 
+const rowRef = ref()
+let rowResizeObserver: ResizeObserver
+let rowWidth = ref(0)
+
 onMounted(() => {
   initDefault()
+  rowResizeObserver = new ResizeObserver(() => {
+    rowWidth.value = rowRef.value.$el.offsetWidth
+  })
+  // 开始对该元素进行监听
+  rowResizeObserver.observe(rowRef.value.$el)
+})
+onUnmounted(() => {
+  if (rowResizeObserver) {
+    rowResizeObserver.disconnect()
+  }
 })
 </script>

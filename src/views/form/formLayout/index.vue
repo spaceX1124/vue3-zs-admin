@@ -9,7 +9,7 @@
     <Dialog
       v-model="visible"
       :options="{
-        width: width,
+        width: width
       }">
       <div style="padding: 16px" v-if="visible">
         <Form @registerForm="registerForm" />
@@ -27,7 +27,7 @@ import { schemas } from './main.ts'
 // 因此，需要在nextTick回调中去执行setFormProps
 // 当然也可以写很多个dialog，但是没必要，只是为了改变参数而已
 const [registerForm, { setFormProps }] = useForm({
-  schemas: unref(schemas),
+  schemas: unref(schemas)
 })
 const visible = ref(false)
 const width = ref('')
@@ -39,7 +39,7 @@ function open(type: number) {
       nextTick(() => {
         setFormProps({
           openLayout: true,
-          baseColspan: 24,
+          baseColspan: 24
         })
       })
       break
@@ -48,7 +48,7 @@ function open(type: number) {
       nextTick(() => {
         setFormProps({
           openLayout: true,
-          baseColspan: 12,
+          baseColspan: 12
         })
       })
       break
@@ -60,10 +60,7 @@ function open(type: number) {
       nextTick(() => {
         setFormProps({
           openGrid: true,
-          gridStyle: {
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-          },
+          gridTemplateColumns: 300
         })
       })
       break
@@ -72,10 +69,7 @@ function open(type: number) {
       nextTick(() => {
         setFormProps({
           openGrid: true,
-          gridStyle: {
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(500px, 1fr))',
-          },
+          gridTemplateColumns: 500
         })
       })
       break

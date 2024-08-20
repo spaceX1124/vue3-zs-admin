@@ -1,7 +1,7 @@
 <template>
-  <el-col v-bind="getBindingElCol">
+  <el-col ref="colRef" v-bind="getBindingElCol">
     <el-form-item v-bind="getBindingElFormItem">
-      <component :is="component" v-bind="getBindingComponent" v-model="modelValue"/>
+      <component :is="component" v-bind="getBindingComponent" v-model="modelValue" />
     </el-form-item>
   </el-col>
 </template>
@@ -15,20 +15,21 @@ import { isNullOrUndefOrEmpty, isNumber, isObj } from '@/utils/is.ts'
 import { ColEx } from '@/types/form.ts'
 
 interface PropsType {
-  schema: Common.BasicForm; // 当前字段配置信息
-  formProps: BasicFormProps; // 当前表单配置信息
-  formModel: Global.Recordable; // 当前表单数据
+  schema: Common.BasicForm // 当前字段配置信息
+  formProps: BasicFormProps // 当前表单配置信息
+  formModel: Global.Recordable // 当前表单数据
   setFormModelValue: (key: string, value: any) => void // 设置当前字段数据
+  rowWidth: number // el-row的宽度
 }
 
 const props = withDefaults(defineProps<PropsType>(), {})
 const modelValue = computed({
-  get () {
+  get() {
     const { key } = props.schema
     // 一开始取不到，就返回''
     return key && !isNullOrUndefOrEmpty(props.formModel[key]) ? props.formModel[key] : ''
   },
-  set (newVal) {
+  set(newVal) {
     const { key } = props.schema
     key && props.setFormModelValue(key, newVal)
   }
@@ -37,38 +38,44 @@ const modelValue = computed({
 const component = computed(() => {
   return componentMap.get(props.schema.component)
 })
+
+const colRef = ref()
 // 给el-col绑定一些参数
 const getBindingElCol = computed(() => {
-  console.log(props.formProps, 'props.formProps')
   // 字段的布局配置
-  const { colSpan, gridColumn } = props.schema
+  const { colSpan, gridSpan = 1 } = props.schema
   // 表单的布局配置
-  const { baseColspan, openGrid, openLayout } = props.formProps
-  let colProps: ColEx = { span: 24 }
-  // 表单配置控制当前字段布局展示
-  if (!isNullOrUndefOrEmpty(baseColspan)) {
-    if (isNumber(baseColspan)) {
-      colProps.span = baseColspan
-    }
-    if (isObj(baseColspan)) {
-      colProps = { ...baseColspan }
-    }
-  }
-  // 字段自身自定义控制自己的布局
-  if (isNumber(colSpan)) {
-    colProps.span = colSpan
-  }
-  if (isObj(colSpan)) {
-    colProps = { ...colProps, ...colSpan }
-  }
+  const { baseColspan, openGrid, openLayout, gridTemplateColumns = 300 } = props.formProps
+
   // 开启了栅格布局
-  if(openLayout) {
+  if (openLayout) {
+    let colProps: ColEx = { span: 24 }
+    // 表单配置控制当前字段布局展示
+    if (!isNullOrUndefOrEmpty(baseColspan)) {
+      if (isNumber(baseColspan)) {
+        colProps.span = baseColspan
+      }
+      if (isObj(baseColspan)) {
+        colProps = { ...baseColspan }
+      }
+    }
+    // 字段自身自定义控制自己的布局
+    if (isNumber(colSpan)) {
+      colProps.span = colSpan
+    }
+    if (isObj(colSpan)) {
+      colProps = { ...colProps, ...colSpan }
+    }
     return colProps
   }
   // 开启了grid布局
   if (openGrid) {
+    let span = gridSpan
+    if (props.rowWidth <= gridSpan * gridTemplateColumns) {
+      span = 1
+    }
     return {
-      style: gridColumn
+      style: { gridColumn: `span ${span}` }
     }
   }
 })
@@ -101,7 +108,7 @@ const getBindingComponent = computed(() => {
 })
 
 // 获取表单验证规则
-function getRules () {
+function getRules() {
   let rules: FormItemRule[] = []
   const { required, dynamicRules, component, title } = props.schema
   if (dynamicRules) {
@@ -109,7 +116,7 @@ function getRules () {
   }
   if (required) {
     const trigger = NO_AUTO_LINK_COMPONENTS.includes(component) ? 'blur' : 'change'
-    if(!rules.length) {
+    if (!rules.length) {
       rules = [{ required: true, message: `${title}必填`, trigger }]
     } else {
       const requiredIndex: number = rules.findIndex((rule) => Reflect.has(rule, 'required'))
@@ -120,5 +127,4 @@ function getRules () {
   }
   return rules
 }
-
 </script>

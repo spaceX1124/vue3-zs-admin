@@ -82,7 +82,8 @@ interface BaseFormSchema<T extends ComponentType = any> {
   defaultValue?: string | string[] // 默认值
   required?: boolean // 是否必填
   colSpan?: number | ColEx // 字段栅格布局样式，用于表单布局
-  gridColumn?: { gridColumn: 'span 2' | 'span 3' | 'span 4' } // Grid 布局中的一个属性，用于控制一个元素在网格中的列跨度，
+  gridSpan?: 2 | 3 | 4 // 控制当前元素在grid布局中的列跨度
+  // gridColumn?: { gridColumn: 'span 2' | 'span 3' | 'span 4' } // Grid 布局中的一个属性，用于控制一个元素在网格中的列跨度，
   text?: (row: Global.Recordable) => any // 用于表格值的回显
   lineClamp?: number // 控制文字超出几行展示省略号
   splitStyle?: string // 控制表格多个内容回显如何连接，如，篮球/足球

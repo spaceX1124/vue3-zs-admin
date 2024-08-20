@@ -14,7 +14,6 @@ export const schemas: Common.BasicForm[] = [
     componentProps: {
       type: 'textarea'
     }
-
   },
   {
     key: 'key3',
@@ -33,7 +32,7 @@ export const schemas: Common.BasicForm[] = [
       maxlength: 18
     },
     required: true,
-    dynamicRules () {
+    dynamicRules() {
       return [
         {
           validator: validateIdCard,
@@ -41,14 +40,13 @@ export const schemas: Common.BasicForm[] = [
         }
       ]
     }
-
   },
   {
     key: 'key5',
     title: '邮箱必填',
     component: 'Input',
     required: true,
-    dynamicRules () {
+    dynamicRules() {
       // 不是必填，但是如果填了就需要验证
       return [
         {
@@ -56,10 +54,8 @@ export const schemas: Common.BasicForm[] = [
           trigger: 'blur'
         }
       ]
-    }
-    // gridColumn: {
-    //   gridColumn: 'span 2'
-    // }
+    },
+    gridSpan: 2
   },
   {
     key: 'key6',
