@@ -32,6 +32,14 @@ export const schemas:Common.BasicForm[] = [
     }
   },
   {
+    key: 'key322',
+    title: '正整数',
+    component: 'Input',
+    componentProps: {
+      positiveInteger: true
+    }
+  },
+  {
     key: 'key4',
     title: '3位小数',
     component: 'Input',

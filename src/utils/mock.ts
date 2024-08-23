@@ -76,10 +76,17 @@ Mock.mock('/api/pageList', 'post', (data) => {
   }
 })
 
-Mock.mock('/api/hobbyList', 'get', (data) => {
+Mock.mock('/api/hobbyList', 'post', (data) => {
+  console.log(data, 'ddd')
+  const postData = JSON.parse(data.body)
+  console.log(postData, 'postData')
   return {
     code: 0,
-    data: [{ title: '篮球', id: 1 }, { title: '足球', id: 2 }, { title: '乒乓球', id: 3 }],
+    data: [
+      { title: '篮球', id: 1 },
+      { title: '足球', id: 2 },
+      { title: '乒乓球', id: 3 }
+    ],
     message: '调用成功',
     ok: true,
     result: 'success'

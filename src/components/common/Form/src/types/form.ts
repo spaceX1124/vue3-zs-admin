@@ -24,10 +24,6 @@ export interface BasicFormProps {
   gutter?: number // 元素间隔
   openGrid?: boolean // 开启grid响应式布局
   gridTemplateColumns?: number // 如300，则表单中的元素的宽度最小就是300px，为什么是最小，当表单容器宽700时，一行只能放2个，那么这2个的宽度平分，如果是900，那就刚好300一个
-  //   gridStyle?: {
-  //     display: 'grid'
-  //     gridTemplateColumns: string // repeat(auto-fit, minmax(300px, 1fr))
-  //   }
   globDisabled?: boolean // 整个表单是否置灰
   formData?: Global.Recordable // 表单数据，如编辑时，或者搜索时加了缓存，进来的时候要直接回显
 }

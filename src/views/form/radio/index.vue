@@ -12,7 +12,9 @@ const [registerForm] = useForm({
     key1: 0,
     key2: '2',
     key5: false
-  }
+  },
+  openLayout: true,
+  baseColspan: 6
 })
 </script>
 <style lang="scss" scoped>

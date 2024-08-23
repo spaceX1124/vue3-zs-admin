@@ -2,7 +2,7 @@ import { Common } from '@/types'
 
 export const schemas: Common.BasicForm[] = [
   {
-    key: 'key13',
+    key: 'key0',
     title: '单选',
     component: 'BasicTitle',
     colSpan: 24
@@ -15,17 +15,17 @@ export const schemas: Common.BasicForm[] = [
       { label: '选项1', value: 0 },
       { label: '选项2', value: 1 },
       { label: '选项3', value: 2 }
-    ],
-    colSpan: 12
+    ]
   },
   {
     key: 'key2',
     title: '远程数据下拉',
     component: 'Select',
     async: {
-      label: 'name',
+      label: 'title',
       value: 'id',
-      url: '/getList',
+      url: '/hobbyList',
+      method: 'post',
       data: { id: 1 }
     }
   },
@@ -40,7 +40,7 @@ export const schemas: Common.BasicForm[] = [
     ]
   },
   {
-    key: 'key11',
+    key: 'key4',
     title: '禁用某个选项，可直接通过属性控制',
     component: 'Select',
     dataList: [
@@ -53,7 +53,7 @@ export const schemas: Common.BasicForm[] = [
     }
   },
   {
-    key: 'key4',
+    key: 'key5',
     title: '控制key5和key6显示隐藏',
     component: 'Select',
     dataList: [
@@ -61,30 +61,31 @@ export const schemas: Common.BasicForm[] = [
       { label: '选项2', value: 1 },
       { label: '选项3', value: 2 }
     ],
-    componentEmits ({ updateSchema }) {
+    componentEmits({ updateSchema }) {
       return {
-        change (innerValue) {
+        change(innerValue) {
           if (innerValue === '1') {
             // 控制key5和key6显示
-            updateSchema && updateSchema([
-              {
-                key: 'key5',
-                formHidden: false,
-                component: 'Select'
-              },
-              {
-                key: 'key6',
-                formHidden: false,
-                component: 'Select'
-              }
-            ])
+            updateSchema &&
+              updateSchema([
+                {
+                  key: 'key5',
+                  formHidden: false,
+                  component: 'Select'
+                },
+                {
+                  key: 'key6',
+                  formHidden: false,
+                  component: 'Select'
+                }
+              ])
           }
         }
       }
     }
   },
   {
-    key: 'key5',
+    key: 'key6',
     title: 'key5',
     component: 'Select',
     dataList: [
@@ -95,7 +96,7 @@ export const schemas: Common.BasicForm[] = [
     formHidden: true
   },
   {
-    key: 'key6',
+    key: 'key7',
     title: 'key6',
     component: 'Select',
     dataList: [
@@ -106,7 +107,7 @@ export const schemas: Common.BasicForm[] = [
     formHidden: true
   },
   {
-    key: 'key7',
+    key: 'key8',
     title: '隐藏一个选项，本地数据',
     component: 'Select',
     dataList: [
@@ -119,7 +120,7 @@ export const schemas: Common.BasicForm[] = [
     }
   },
   {
-    key: 'key7',
+    key: 'key9',
     title: '隐藏多个选项，本地数据',
     component: 'Select',
     dataList: [
@@ -132,7 +133,7 @@ export const schemas: Common.BasicForm[] = [
     }
   },
   {
-    key: 'key8',
+    key: 'key10',
     title: '隐藏多个选项，远程数据',
     component: 'Select',
     componentProps: {
@@ -141,25 +142,27 @@ export const schemas: Common.BasicForm[] = [
     async: {
       label: 'name',
       value: 'id',
-      url: '/getList',
+      url: '/hobbyList',
+      method: 'post',
       data: { id: 1 }
     }
   },
   {
-    key: 'key9',
+    key: 'key11',
     title: '远程输入加载数据',
     component: 'Select',
     async: {
       label: 'name',
       value: 'id',
-      url: '/getList',
+      url: '/hobbyList',
+      method: 'post',
       data: { id: 1 }, // 搜索的时候额外的参数，如果没有就不传
       remote: true,
       remoteKey: 'searchVal'
     }
   },
   {
-    key: 'key10',
+    key: 'key12',
     title: '本地数据，可筛选',
     component: 'Select',
     dataList: [
@@ -172,19 +175,20 @@ export const schemas: Common.BasicForm[] = [
     }
   },
   {
-    key: 'key14',
+    key: 'key13',
     title: '多选',
     component: 'BasicTitle',
     colSpan: 24
   },
   {
-    key: 'key231',
+    key: 'key14',
     title: '我要的值是字符串',
     component: 'Select',
     async: {
       label: 'name',
       value: 'id',
-      url: '/getList',
+      url: '/hobbyList',
+      method: 'post',
       data: { id: 1 }
     },
     componentProps: {
@@ -193,22 +197,23 @@ export const schemas: Common.BasicForm[] = [
     }
   },
   {
-    key: 'key2321',
+    key: 'key15',
     title: '我要的值是数组',
     component: 'Select',
     async: {
       label: 'name',
       value: 'id',
-      url: '/getList',
-      data: { id: 1 }
+      url: '/hobbyList',
+      data: { id: 1 },
+      method: 'post'
     },
     componentProps: {
       multiple: true
     }
   },
   {
-    key: 'key111',
-    title: '本地数据下拉',
+    key: 'key16',
+    title: '本地数据下拉,数据多的时候',
     component: 'Select',
     dataList: [
       { label: '选项是颠倒是非第三方1', value: 0 },
@@ -237,21 +242,22 @@ export const schemas: Common.BasicForm[] = [
     }
   },
   {
-    key: 'key21',
+    key: 'key17',
     title: '远程数据下拉',
     component: 'Select',
     async: {
       label: 'name',
       value: 'id',
-      url: '/getList',
-      data: { id: 1 }
+      url: '/hobbyList',
+      data: { id: 1 },
+      method: 'post'
     },
     componentProps: {
       multiple: true
     }
   },
   {
-    key: 'key31',
+    key: 'key18',
     title: '禁用某个选项，可直接在数据中设置disabled',
     component: 'Select',
     dataList: [
@@ -264,7 +270,7 @@ export const schemas: Common.BasicForm[] = [
     }
   },
   {
-    key: 'key41',
+    key: 'key19',
     title: '禁用某个选项，可直接通过属性控制',
     component: 'Select',
     dataList: [
@@ -278,7 +284,7 @@ export const schemas: Common.BasicForm[] = [
     }
   },
   {
-    key: 'key71',
+    key: 'key20',
     title: '隐藏一个选项，本地数据',
     component: 'Select',
     dataList: [
@@ -292,7 +298,7 @@ export const schemas: Common.BasicForm[] = [
     }
   },
   {
-    key: 'key81',
+    key: 'key21',
     title: '隐藏多个选项，本地数据',
     component: 'Select',
     dataList: [
@@ -306,7 +312,7 @@ export const schemas: Common.BasicForm[] = [
     }
   },
   {
-    key: 'key82',
+    key: 'key22',
     title: '隐藏多个选项，远程数据',
     component: 'Select',
     componentProps: {
@@ -316,28 +322,30 @@ export const schemas: Common.BasicForm[] = [
     async: {
       label: 'name',
       value: 'id',
-      url: '/getList',
-      data: { id: 1 }
+      url: '/hobbyList',
+      data: { id: 1 },
+      method: 'post'
     }
   },
   {
-    key: 'key91',
+    key: 'key23',
     title: '远程输入加载数据',
     component: 'Select',
     async: {
       label: 'name',
       value: 'id',
-      url: '/getList',
+      url: '/hobbyList',
       data: { id: 1 }, // 搜索的时候额外的参数，如果没有就不传
       remote: true,
-      remoteKey: 'searchVal'
+      remoteKey: 'searchVal',
+      method: 'post'
     },
     componentProps: {
       multiple: true
     }
   },
   {
-    key: 'key101',
+    key: 'key24',
     title: '本地数据，可筛选',
     component: 'Select',
     dataList: [

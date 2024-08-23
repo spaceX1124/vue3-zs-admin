@@ -37,13 +37,7 @@ export interface RenderComponentSlot {
   slotName: string
   slotRender: SlotRender
 }
-/**
- * 自定义rule的数据可能需要表单数据和当前字段信息
- * */
-interface DynamicRules {
-  formModel: Global.Recordable
-  schema: Common.BasicForm
-}
+
 /**
  * 栅格样式类型
  * */
@@ -78,7 +72,7 @@ interface BaseFormSchema<T extends ComponentType = any> {
   formHidden?: boolean // 新增表单中是否隐藏
   async?: AsyncType // 异步请求
   dataList?: Common.List[] // 需要本地list数据
-  dynamicRules?: (params?: DynamicRules) => FormItemRule[] // 自定义校验规则
+  dynamicRules?: (params: { formModel: Global.Recordable; schema: Common.BasicForm }) => FormItemRule[] // 自定义校验规则
   defaultValue?: string | string[] // 默认值
   required?: boolean // 是否必填
   colSpan?: number | ColEx // 字段栅格布局样式，用于表单布局

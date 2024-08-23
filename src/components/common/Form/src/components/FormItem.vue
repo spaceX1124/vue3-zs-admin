@@ -78,6 +78,7 @@ const getBindingElCol = computed(() => {
       style: { gridColumn: `span ${span}` }
     }
   }
+  return { span: 24 }
 })
 
 // 给el-form-item绑定一些参数
@@ -125,6 +126,7 @@ function getRules() {
       }
     }
   }
+  console.log(rules, 'rules11')
   return rules
 }
 </script>

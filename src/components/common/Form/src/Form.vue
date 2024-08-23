@@ -1,6 +1,5 @@
 <template>
   <el-form v-bind="getBindingElForm" :model="formModel" ref="ElFormRef" class="custom-form">
-    <div>rowWidth:{{ rowWidth }}</div>
     <el-row ref="rowRef" v-bind="getBindingElRow">
       <template v-for="schema in showSchemas" :key="schema.key">
         <FormItem
@@ -77,7 +76,7 @@ const getBindingElRow = computed(() => {
 })
 
 // 初始化值相关
-const { initDefault } = useFormValues(getProps, {
+const { echoFormValues } = useFormValues(getProps, {
   formModel
 })
 // 操作表单数据相关方法
@@ -111,7 +110,8 @@ let rowResizeObserver: ResizeObserver
 let rowWidth = ref(0)
 
 onMounted(() => {
-  initDefault()
+  // 回显表单值
+  echoFormValues()
   rowResizeObserver = new ResizeObserver(() => {
     rowWidth.value = rowRef.value.$el.offsetWidth
   })

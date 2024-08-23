@@ -72,6 +72,12 @@ export const mainUser = defineStore('mainStore', {
                   title: '表单布局样式',
                   name: 'formLayout',
                   path: 'formLayout'
+                },
+                {
+                  id: 19,
+                  title: '区间输入框',
+                  name: 'inputRange',
+                  path: 'inputRange'
                 }
               ]
             },
@@ -132,6 +138,12 @@ export const mainUser = defineStore('mainStore', {
                   title: 'call/bind/apply',
                   path: 'knowledge2',
                   name: 'knowledge2'
+                },
+                {
+                  id: 33,
+                  title: '发布订阅',
+                  path: 'knowledge3',
+                  name: 'knowledge3'
                 }
               ]
             }

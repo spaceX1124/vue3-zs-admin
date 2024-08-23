@@ -126,10 +126,8 @@ async function focusRemoteMethod() {
   if (unref(flag) && props.options.async && props.options.async.url && !props.options.async.remote) {
     try {
       const { url, data } = props.options.async
-      console.log(url, data)
       loading.value = true
-      // 先模拟请求
-      const res: Global.Recordable[] = await http['get'](url, data)
+      const res: Global.Recordable[] = await http[props.options.async.method || 'get'](url, data)
       loading.value = false
       flag.value = false
       // 处理数据格式

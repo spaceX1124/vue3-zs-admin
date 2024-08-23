@@ -32,7 +32,7 @@ export const schemas: Common.BasicForm[] = [
     title: '爱好',
     async: {
       url: '/hobbyList',
-      method: 'get',
+      method: 'post',
       label: 'title',
       value: 'id'
     }
@@ -59,7 +59,7 @@ export const schemas: Common.BasicForm[] = [
     title: '爱好数据是字符串',
     async: {
       url: '/hobbyList',
-      method: 'get',
+      method: 'post',
       label: 'title',
       value: 'id'
     },
@@ -73,7 +73,7 @@ export const schemas: Common.BasicForm[] = [
     title: '爱好数据是数组',
     async: {
       url: '/hobbyList',
-      method: 'get',
+      method: 'post',
       label: 'title',
       value: 'id'
     },

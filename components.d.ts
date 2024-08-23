@@ -43,6 +43,7 @@ declare module 'vue' {
     FormItem: typeof import('./src/components/common/Form/src/components/FormItem.vue')['default']
     InitPage: typeof import('./src/components/business/InitPage/src/InitPage.vue')['default']
     Input: typeof import('./src/components/common/Form/src/components/Input.vue')['default']
+    InputRange: typeof import('./src/components/common/Form/src/components/InputRange.vue')['default']
     Radio: typeof import('./src/components/common/Form/src/components/Radio.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

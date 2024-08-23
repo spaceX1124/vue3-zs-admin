@@ -8,10 +8,11 @@ import { Form, useForm } from '@/components/common/Form'
 import { schemas } from './main.ts'
 const [registerForm] = useForm({
   schemas: unref(schemas),
-  baseColspan: 8,
   formData: {
     key1: '2024'
-  }
+  },
+  openLayout: true,
+  baseColspan: 6
 })
 </script>
 <style lang="scss" scoped>
