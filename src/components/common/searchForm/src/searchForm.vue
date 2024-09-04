@@ -17,19 +17,26 @@ interface PropsType {
 }
 const props = withDefaults(defineProps<PropsType>(), {})
 const emit = defineEmits(['clearForm', 'search'])
-const [registerForm, { clearFormValues, submit }] = useForm({
+const [registerForm, { clearFormValues, submit, setFormProps }] = useForm({
   schemas: props.schemas.filter((item) => item.search), // 只取可搜索字段
   labelPosition: 'right',
   openGrid: true,
-  gridTemplateColumns: 300
+  gridTemplateColumns: 300,
+  hiddenLabel: true
+})
+
+watch(() => props.schemas, (newVal) => {
+  setFormProps({
+    schemas: props.schemas.filter((item) => item.search) // 只取可搜索字段
+  })
 })
 // 清空表单
-function clearForm() {
+function clearForm () {
   clearFormValues()
   emit('clearForm')
 }
 // 点击搜索
-async function handleSearch() {
+async function handleSearch () {
   const postData = await submit()
   // 过滤掉无空值的字段
   const arr = Object.entries(postData || {}).filter(([key, value]) => !isNullOrUndefOrEmpty(value))
@@ -38,7 +45,7 @@ async function handleSearch() {
 // 折叠状态
 let expandStatus = ref(true)
 // 展开，折叠
-function expand(val: boolean) {
+function expand (val: boolean) {
   expandStatus.value = val
 }
 </script>

@@ -9,7 +9,7 @@ import { Common } from './index'
 interface CellRenderParams {
   column: Common.BasicForm // 字段信息
   rowIndex: number // 当前行索引
-  row: Global.Recordable // 当前行数据s
+  row: Global.Recordable // 当前行数据
 }
 /**
  * 表格渲染函数类型
@@ -68,7 +68,7 @@ interface BaseFormSchema<T extends ComponentType = any> {
   type?: 'seq' | 'checkbox' | 'radio' | 'expand' // 表格当前列可以是 序号 | 复选框 | 单选框 | 展开行
   cellRender?: CellRenderType // 表格渲染函数
   search?: boolean // 该字段是否在搜索框中
-  tableHidden?: boolean // 表格中是否隐藏
+  tableHidden?: boolean // 表格中是否隐藏，因为有些字段可能出现在新增表单中，而不出现在表格中
   formHidden?: boolean // 新增表单中是否隐藏
   async?: AsyncType // 异步请求
   dataList?: Common.List[] // 需要本地list数据
@@ -85,6 +85,8 @@ interface BaseFormSchema<T extends ComponentType = any> {
   sortable?: boolean // 表格，该字段是否开启排序
   align?: 'left' | 'center' | 'right' // 内容对齐方式
   headerAlign?: 'left' | 'center' | 'right' // 表头对齐方式
+  tableEditable?: boolean // 表格中，当前字段是否可编辑
+  tableEditCallback?: (value: any, row: Global.Recordable) => void // 表格中，单元格编辑回调函数
 }
 interface ComponentFormSchema<T extends ComponentType = any> extends BaseFormSchema<T> {
   component: T // 组件必传，不管是表格还是表单，都需要表明是什么组件，因为在渲染或者在处理值的时候要依赖是什么组件

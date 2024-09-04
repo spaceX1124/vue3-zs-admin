@@ -22,7 +22,7 @@ interface Result {
  * @param {ActionType} actions 额外需要的一些参数
  * @return {Result} 需要暴露给外面的一些数据和方法
  * */
-export function useSourceData(innerProps: ComputedRef<BasicTableProps>, actions: ActionType): Result {
+export function useSourceData (innerProps: ComputedRef<BasicTableProps>, actions: ActionType): Result {
   const { setLoading, getPaginationInfo, VxeTableRef } = actions
   // 表格数据
   const tableDataRef = ref<Global.Recordable[]>([])
@@ -34,11 +34,11 @@ export function useSourceData(innerProps: ComputedRef<BasicTableProps>, actions:
   const searchRequestParams = ref<Global.Recordable>({})
 
   // 修改快捷搜索字段参数
-  function refreshSearchRequestParams(obj: Global.Recordable) {
+  function refreshSearchRequestParams (obj: Global.Recordable) {
     searchRequestParams.value = { ...unref(searchRequestParams), ...obj }
   }
   // 清空快捷搜索字段参数
-  function clearSearchRequestParams() {
+  function clearSearchRequestParams () {
     searchRequestParams.value = {}
   }
 
@@ -60,12 +60,12 @@ export function useSourceData(innerProps: ComputedRef<BasicTableProps>, actions:
     }
   })
   // 接口获取表格数据
-  async function fetchTableData() {
+  async function fetchTableData () {
     // 处理请求参数;
     tableRequestParams.value = {
       ...unref(searchRequestParams),
-      pageSize: getPaginationInfo.value.pageSize,
-      pageNum: getPaginationInfo.value.pageNum,
+      size: getPaginationInfo.value.pageSize,
+      current: getPaginationInfo.value.pageNum,
       ...innerProps.value.async?.data
     }
     try {
@@ -74,9 +74,9 @@ export function useSourceData(innerProps: ComputedRef<BasicTableProps>, actions:
         new Error('传接口进来啊')
         return
       }
-      const { url } = innerProps.value.async
+      const { url, method } = innerProps.value.async
       // 发起请求
-      const res = await http.post(url, unref(tableRequestParams))
+      const res = await http[method || 'get'](url, unref(tableRequestParams))
       // 拿到数据
       tableDataRef.value = res.records
       total.value = res.total
@@ -90,7 +90,7 @@ export function useSourceData(innerProps: ComputedRef<BasicTableProps>, actions:
   }
 
   // 数据刷新将表格滚动条回到顶部
-  async function tableScrollTop() {
+  async function tableScrollTop () {
     const $table = VxeTableRef.value
     if ($table) {
       await nextTick()

@@ -28,7 +28,7 @@ export interface BasicTableProps {
     tableData?: Global.Recordable[]; // 表格数据
     async?: { // 异步请求
         url: string; // 接口地址
-        method?: string;
+        method?: 'get' | 'post';
         data?: Global.Recordable // 接口所需部分参数
     };
     seqHidden?: boolean; // 隐藏序号
@@ -44,7 +44,8 @@ export interface BasicTableProps {
     align?: 'left' | 'center' | 'right'; // 内容对齐方式
     headerAlign?: 'left' | 'center' | 'right'; // 表头对齐方式
     showSearch?: boolean; // 显示搜索组件
-    showOperate?: boolean; // 显示操作
+    operateList?:Common.OperateType[] // 操作按钮
+    editCallback?: Global.Fn // 编辑函数
 }
 
 export interface TableActionType {

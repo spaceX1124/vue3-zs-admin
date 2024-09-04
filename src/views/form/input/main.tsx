@@ -1,6 +1,7 @@
 import { validateEmail, validateIdCard, validatePhone } from '@/utils/rules.ts'
 import { Search } from '@element-plus/icons-vue'
 import { Common } from '@/types'
+import { RegexMap, ValidationType } from '@/libs/regexp.ts'
 
 export const schemas:Common.BasicForm[] = [
   {
@@ -76,7 +77,8 @@ export const schemas:Common.BasicForm[] = [
     dynamicRules () {
       return [
         {
-          validator: validateIdCard,
+          pattern: RegexMap[ValidationType.ID].regular,
+          message: '请输入正确的身份证号',
           trigger: 'blur'
         }
       ]

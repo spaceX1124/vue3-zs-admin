@@ -21,11 +21,11 @@ interface ActionType {
  * @param {ComputedRef<BasicFormProps>} formProps 通过useForm传入的一些参数
  * @param {ActionType} actions
  * */
-export function useFormEvent(formProps: ComputedRef<BasicFormProps>, actions: ActionType) {
+export function useFormEvent (formProps: ComputedRef<BasicFormProps>, actions: ActionType) {
   // 不要解构formProps，导致失去响应性了
   const { schemaRef, formModel, ElFormRef } = actions
   // 设置表单值 {key1:123}，可多个设置
-  function setFieldsValue(values: Global.Recordable) {
+  function setFieldsValue (values: Global.Recordable) {
     if (Object.keys(values).length === 0) {
       return
     }
@@ -42,26 +42,27 @@ export function useFormEvent(formProps: ComputedRef<BasicFormProps>, actions: Ac
     })
   }
   // 重置整个表单的值
-  function resetFields() {
+  function resetFields () {
     // 另外写一个方法getDefaultValue，处理重置表单之后的值，可能某个字段的初始值就是[0，0]，所以还是需要这个方法的
   }
   // 表单验证
-  async function validate() {
+  async function validate () {
     const valid = await unref(ElFormRef)?.validate()
     console.log(valid, 'valid')
   }
 
   // 提交表单
-  async function submit() {
+  async function submit () {
     if (!ElFormRef) return
     try {
       await validate()
+      console.log(actions.showSchemas, formModel, 'formModel')
       // 把表单中的值抛出去
       const postData: Global.Recordable = {}
       unref(actions.showSchemas).forEach((item) => {
         const { key, keyArr } = item
         if (key) {
-          const value = JSON.parse(JSON.stringify(formModel[key]))
+          const value = !isNullOrUndefOrEmpty(formModel[key]) ? JSON.parse(JSON.stringify(formModel[key])) : ''
           if (value) {
             // 多个值对应多个key,日期区间可能会用到，区间输入可能会用到
             if (keyArr && keyArr.length) {
@@ -70,8 +71,8 @@ export function useFormEvent(formProps: ComputedRef<BasicFormProps>, actions: Ac
                 ? isArray(value)
                   ? value
                   : isString(value)
-                  ? value.split(',')
-                  : []
+                    ? value.split(',')
+                    : []
                 : []
               keyArr.forEach((k, i) => {
                 postData[k] = val[i] || ''
@@ -88,7 +89,7 @@ export function useFormEvent(formProps: ComputedRef<BasicFormProps>, actions: Ac
     }
   }
   // 清空表单值
-  function clearFormValues() {
+  function clearFormValues () {
     unref(actions.showSchemas).forEach((item) => {
       const { key } = item
       formModel[key] = ''
@@ -96,7 +97,7 @@ export function useFormEvent(formProps: ComputedRef<BasicFormProps>, actions: Ac
   }
 
   // 更新一个或多个字段的配置，以达到控制字段的特性
-  function updateSchema(schema: Common.BasicForm | Common.BasicForm[]) {
+  function updateSchema (schema: Common.BasicForm | Common.BasicForm[]) {
     let updateSchema: Common.BasicForm[] = []
     if (isObj(schema)) {
       updateSchema.push(schema as Common.BasicForm)

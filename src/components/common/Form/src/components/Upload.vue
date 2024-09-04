@@ -4,6 +4,8 @@
     class="avatar-uploader"
     action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
     :before-upload="beforeUpload"
+    :multiple="options.multiple"
+    :limit="options.limit || 1"
     :on-success="handleSuccess"
   >
     <el-icon class="avatar-uploader-icon"><Plus /></el-icon>
@@ -51,6 +53,8 @@ interface PropsType {
     size?: number; // 上传大小限制，如5,则为5M
     pxObj?: {width: number; height: number}; // 允许上传的分辨率，如100*100
     componentEmits?: UploadEmitsType; // 暴露出去的事件
+    multiple?: boolean; // 是否多张上传
+    limit?: number; // 限制上传数量
   }
 }
 const props = withDefaults(defineProps<PropsType>(), {

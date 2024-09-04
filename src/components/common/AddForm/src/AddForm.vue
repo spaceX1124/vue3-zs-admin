@@ -13,12 +13,15 @@
 import Dialog from '@/components/common/Dialog/index.vue'
 import { Form, useForm } from '@/components/common/Form'
 import { Common } from '@/types'
+import { isNullOrUndefOrEmpty } from '@/utils/is.ts'
 interface propsType {
   modelValue: boolean;
   schemas: Common.BasicForm[],
   options?: {
     title?: string;
     width?: string;
+    isEdit?: boolean;
+    detailData?: Global.Recordable
   }
 }
 const props = withDefaults(defineProps<propsType>(), {
@@ -35,8 +38,20 @@ const show = computed({
   }
 })
 
-const [registerForm] = useForm({
-  schemas: props.schemas
-  
+const [registerForm, { setFieldsValue }] = useForm({
+  schemas: props.schemas.filter((item) => !item.formHidden), // 过滤掉需要隐藏的字段
+  openGrid: true,
+  gridTemplateColumns: 400
+})
+
+watch(() => props.options?.detailData, (newVal) => {
+  const arr = props.schemas.filter((item) => !item.formHidden)
+  const obj: Global.Recordable = {}
+  arr.forEach(item => {
+    if (newVal && !isNullOrUndefOrEmpty(newVal[item.key])) {
+      obj[item.key] = newVal[item.key]
+    }
+  })
+  setFieldsValue(obj)
 })
 </script>

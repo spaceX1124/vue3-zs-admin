@@ -1,5 +1,8 @@
 <template>
-  <el-form v-bind="getBindingElForm" :model="formModel" ref="ElFormRef" class="custom-form">
+  <el-form v-bind="getBindingElForm"
+           :model="formModel"
+           ref="ElFormRef"
+           class="custom-form">
     <el-row ref="rowRef" v-bind="getBindingElRow">
       <template v-for="schema in showSchemas" :key="schema.key">
         <FormItem
@@ -29,7 +32,7 @@ const ElFormRef = ref<FormInstance | null>(null)
 const schemaRef = ref<Common.BasicForm[]>([])
 
 // 修改表单中的值
-function setFormModelValue(key: string, value: any): void {
+function setFormModelValue (key: string, value: any): void {
   formModel[key] = value
 }
 
@@ -45,12 +48,12 @@ let getProps = computed(() => {
 const showSchemas = computed(() => {
   const schemas = cloneDeep(unref(schemaRef).length ? unref(schemaRef) : unref(getProps).schemas)
   // 处理可显示的字段
-  const showList = schemas?.filter((schema) => {
+  const showList = schemas?.map((schema) => {
     // 如果是函数将更新字段方法传入
     if (schema.componentEmits && isFunc(schema.componentEmits)) {
       schema.componentEmits = schema.componentEmits({ updateSchema })
     }
-    return !schema.formHidden
+    return schema
   })
   return showList || []
 })
@@ -59,18 +62,18 @@ const showSchemas = computed(() => {
 const getBindingElForm = computed(() => {
   return {
     labelPosition: unref(getProps).labelPosition || 'top',
-    labelWidth: '130px'
+    labelWidth: unref(getProps).hiddenLabel ? '0px' : '130px'
   }
 })
 // 给el-row绑定的一些参数
 const getBindingElRow = computed(() => {
   return {
-    gutter: unref(getProps).gutter || 20, // 栅格间隔,默认是20
+    gutter: unref(getProps).gutter || 24, // 栅格间隔,默认是20
     style: unref(getProps).openGrid
       ? {
-          display: 'grid',
-          gridTemplateColumns: `repeat(auto-fit, minmax(${unref(getProps).gridTemplateColumns || 300}px, 1fr))`
-        }
+        display: 'grid',
+        gridTemplateColumns: `repeat(auto-fit, minmax(${unref(getProps).gridTemplateColumns || 300}px, 1fr))`
+      }
       : null
   }
 })
@@ -89,7 +92,7 @@ const { setFieldsValue, submit, updateSchema, clearFormValues } = useFormEvent(g
 })
 
 // 设置外部传递进来的参数
-function setFormProps(propsData: BasicFormProps) {
+function setFormProps (propsData: BasicFormProps) {
   console.log(propsData, 'propsData22')
   innerProps.value = deepMerge(unref(innerProps), propsData)
   console.log(innerProps, 'innerProps11')

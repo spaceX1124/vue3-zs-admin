@@ -1,7 +1,8 @@
-export const myList = {
-  pageList: '/pageList',
+export const productionList = {
+  pageList: '/product/pageList',
+  updateSort: '/product/updateSort',
   insert: '/creator',
   update: '/update',
   delete: '/delete',
-  detail: '/detail'
+  detail: '/product/detail'
 }

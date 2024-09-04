@@ -89,7 +89,7 @@ function input (val: string) {
       temp = ''
     }
   }
-  innerValue.value = temp
+  innerValue.value = removeLeadingZeros(temp)
   const { componentEmits } = props.options
   if (componentEmits && componentEmits.input) {
     componentEmits.input(temp)
@@ -126,6 +126,11 @@ function clear () {
   if (componentEmits && componentEmits.clear) {
     componentEmits.clear()
   }
+}
+// 处理输入01，001，0001，001.2等这些情况
+function removeLeadingZeros (val: string) {
+  // 使用正则表达式匹配前导零
+  return val.replace(/^0+(?!\.|$)/, '') || ''
 }
 
 </script>

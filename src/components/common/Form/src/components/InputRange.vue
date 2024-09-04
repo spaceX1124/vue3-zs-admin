@@ -1,9 +1,10 @@
 <template>
-  <div class="center">
+  <div class="center InputRange">
     <el-input
+      style="flex: 1"
       :model-value="innerValue[0]"
       @input="input($event, 'first')"
-      :placeholder="options.placeholder"
+      :placeholder="options.placeholder + '最小值'"
       type="text"
       :maxlength="options.maxlength"
       :disabled="options.disabled"
@@ -13,9 +14,10 @@
       @clear="clear('first')" />
     <span style="margin: 0 12px">-</span>
     <el-input
+      style="flex: 1"
       :model-value="innerValue[1]"
       @input="input($event, 'last')"
-      :placeholder="options.placeholder"
+      :placeholder="options.placeholder + '最大值'"
       type="text"
       :maxlength="options.maxlength"
       :disabled="options.disabled"
@@ -39,8 +41,6 @@ interface PropsType {
   modelValue: string | number | string[] | number[]
   options?: {
     placeholder?: string
-    firstlaceholder?: string
-    lastlaceholder?: string
     maxlength?: string | number
     decimal?: number // 保留几位小数，输入框可能会用到
     integer?: boolean // 只能输入整数
@@ -57,7 +57,7 @@ const props = withDefaults(defineProps<PropsType>(), {
 })
 const emit = defineEmits(['update:modelValue', 'blur'])
 const innerValue = computed({
-  get() {
+  get () {
     if (isNullOrUndefOrEmpty(props.modelValue)) return []
     if (isArray(props.modelValue)) {
       return props.modelValue.map(String)
@@ -67,12 +67,12 @@ const innerValue = computed({
     }
     return []
   },
-  set(newVal) {
+  set (newVal) {
     // 要想计算属性执行，基本数据类型可以直接改值，如果是引用类型，如数组，改里面的值是不会触发set的
     emit('update:modelValue', newVal)
   }
 })
-function input(val: string, type: 'first' | 'last') {
+function input (val: string, type: 'first' | 'last') {
   let temp = val.toString()
   const { decimal, integer, positiveInteger } = props.options
   if (decimal) {
@@ -89,10 +89,10 @@ function input(val: string, type: 'first' | 'last') {
     }
   }
   if (type === 'first') {
-    innerValue.value[0] = temp
+    innerValue.value[0] = removeLeadingZeros(temp)
   }
   if (type === 'last') {
-    innerValue.value[1] = temp
+    innerValue.value[1] = removeLeadingZeros(temp)
   }
   innerValue.value = unref(innerValue)
   const { componentEmits } = props.options
@@ -101,7 +101,7 @@ function input(val: string, type: 'first' | 'last') {
   }
 }
 // 处理小数，返回正常的小数值
-function formatNumber(val: string, dec: number) {
+function formatNumber (val: string, dec: number) {
   let temp = val.toString()
   temp = temp.replace(/[^\d.]/g, '') // 清除"数字"和"."以外的字符
   temp = temp.replace(/^\./g, '') // 验证第一个字符是数字
@@ -114,22 +114,33 @@ function formatNumber(val: string, dec: number) {
   return temp
 }
 
-function blur(e, type: 'first' | 'last') {
+function blur (e, type: 'first' | 'last') {
   const { componentEmits } = props.options
   if (componentEmits && componentEmits.blur) {
     componentEmits.blur(type === 'first' ? unref(innerValue)[0] : unref(innerValue)[1], type)
   }
 }
-function focus(e, type: 'first' | 'last') {
+function focus (e, type: 'first' | 'last') {
   const { componentEmits } = props.options
   if (componentEmits && componentEmits.focus) {
     componentEmits.focus(type === 'first' ? unref(innerValue)[0] : unref(innerValue)[1], type)
   }
 }
-function clear(type: 'first' | 'last') {
+function clear (type: 'first' | 'last') {
   const { componentEmits } = props.options
   if (componentEmits && componentEmits.clear) {
     componentEmits.clear(type)
   }
 }
+
+// 处理输入01，001，0001，001.2等这些情况
+function removeLeadingZeros (val: string) {
+  // 使用正则表达式匹配前导零
+  return val.replace(/^0+(?!\.|$)/, '') || ''
+}
 </script>
+<style lang="scss" scoped>
+.InputRange {
+  width: 100%;
+}
+</style>

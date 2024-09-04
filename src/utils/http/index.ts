@@ -1,24 +1,27 @@
 import { type AxiosRequestConfig, AxiosResponse } from 'axios'
 import service from './axios'
 import { Result } from './type.ts'
-export const http = {
-  get(url: string, params?: Global.Recordable, config?: AxiosRequestConfig) {
-    console.log(url, 'getgetget')
+import { Common } from '@/types'
+const http: Record<Common.Method, Global.PromiseFn> = {
+  get (url: string, params?: Global.Recordable, config?: AxiosRequestConfig) {
     return request({ url, params, ...config, method: 'get' })
   },
-  post(url: string, data?: Global.Recordable, config?: AxiosRequestConfig) {
-    console.log(url, 'postpostpost')
+  post (url: string, data?: Global.Recordable, config?: AxiosRequestConfig) {
     return request({ url, data, ...config, method: 'post' })
   }
 }
 
-function request(config: AxiosRequestConfig): Promise<any> {
+function request (config: AxiosRequestConfig): Promise<any> {
   return new Promise((resolve, reject) => {
     service
-      .request(config)
-      .then((res: AxiosResponse<Result>) => {
-        resolve(res.data)
-      })
-      .catch(reject)
+    .request(config)
+    .then((res: AxiosResponse<Result>) => {
+      resolve(res.data)
+    })
+    .catch(reject)
   })
+}
+
+export {
+  http
 }

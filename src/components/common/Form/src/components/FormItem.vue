@@ -24,12 +24,12 @@ interface PropsType {
 
 const props = withDefaults(defineProps<PropsType>(), {})
 const modelValue = computed({
-  get() {
+  get () {
     const { key } = props.schema
     // 一开始取不到，就返回''
     return key && !isNullOrUndefOrEmpty(props.formModel[key]) ? props.formModel[key] : ''
   },
-  set(newVal) {
+  set (newVal) {
     const { key } = props.schema
     key && props.setFormModelValue(key, newVal)
   }
@@ -84,8 +84,9 @@ const getBindingElCol = computed(() => {
 // 给el-form-item绑定一些参数
 const getBindingElFormItem = computed(() => {
   const { title, key, component } = props.schema
+  const { hiddenLabel } = props.formProps
   return {
-    label: component !== 'BasicTitle' ? title : '',
+    label: component !== 'BasicTitle' && !hiddenLabel ? title : '',
     rules: getRules(),
     prop: key // @todo 看到这个突然想起来，如果表单项中嵌套表单项（表单项可能是不同的，也可能是一个数组循环渲染），记得写
   }
@@ -109,7 +110,7 @@ const getBindingComponent = computed(() => {
 })
 
 // 获取表单验证规则
-function getRules() {
+function getRules () {
   let rules: FormItemRule[] = []
   const { required, dynamicRules, component, title } = props.schema
   if (dynamicRules) {
@@ -126,7 +127,6 @@ function getRules() {
       }
     }
   }
-  console.log(rules, 'rules11')
   return rules
 }
 </script>

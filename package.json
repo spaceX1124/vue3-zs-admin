@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "build:test": "type-check vite build --mode test",
+    "build:prod": "type-check vite build --mode prod",
     "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
     "build-only": "vite build",
@@ -14,7 +16,9 @@
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.1",
     "axios": "^1.7.2",
+    "crypto-js": "^4.2.0",
     "element-plus": "^2.7.6",
+    "js-md5": "^0.8.3",
     "lodash-es": "^4.17.21",
     "pinia": "^2.1.7",
     "vue": "^3.4.29",
@@ -25,6 +29,7 @@
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.8.0",
     "@tsconfig/node20": "^20.1.4",
+    "@types/crypto-js": "^4.2.2",
     "@types/lodash-es": "^4.17.12",
     "@types/mockjs": "^1.0.10",
     "@types/node": "^20.14.5",

@@ -61,9 +61,9 @@ export const schemas: Common.BasicForm[] = [
       { label: '选项2', value: 1 },
       { label: '选项3', value: 2 }
     ],
-    componentEmits({ updateSchema }) {
+    componentEmits ({ updateSchema }) {
       return {
-        change(innerValue) {
+        change (innerValue) {
           if (innerValue === '1') {
             // 控制key5和key6显示
             updateSchema &&
@@ -140,7 +140,7 @@ export const schemas: Common.BasicForm[] = [
       hiddenOptions: [1, 3]
     },
     async: {
-      label: 'name',
+      label: 'title',
       value: 'id',
       url: '/hobbyList',
       method: 'post',
@@ -152,7 +152,7 @@ export const schemas: Common.BasicForm[] = [
     title: '远程输入加载数据',
     component: 'Select',
     async: {
-      label: 'name',
+      label: 'title',
       value: 'id',
       url: '/hobbyList',
       method: 'post',
@@ -185,7 +185,7 @@ export const schemas: Common.BasicForm[] = [
     title: '我要的值是字符串',
     component: 'Select',
     async: {
-      label: 'name',
+      label: 'title',
       value: 'id',
       url: '/hobbyList',
       method: 'post',
@@ -201,7 +201,7 @@ export const schemas: Common.BasicForm[] = [
     title: '我要的值是数组',
     component: 'Select',
     async: {
-      label: 'name',
+      label: 'title',
       value: 'id',
       url: '/hobbyList',
       data: { id: 1 },
@@ -246,7 +246,7 @@ export const schemas: Common.BasicForm[] = [
     title: '远程数据下拉',
     component: 'Select',
     async: {
-      label: 'name',
+      label: 'title',
       value: 'id',
       url: '/hobbyList',
       data: { id: 1 },
@@ -320,7 +320,7 @@ export const schemas: Common.BasicForm[] = [
       multiple: true
     },
     async: {
-      label: 'name',
+      label: 'title',
       value: 'id',
       url: '/hobbyList',
       data: { id: 1 },
@@ -332,7 +332,7 @@ export const schemas: Common.BasicForm[] = [
     title: '远程输入加载数据',
     component: 'Select',
     async: {
-      label: 'name',
+      label: 'title',
       value: 'id',
       url: '/hobbyList',
       data: { id: 1 }, // 搜索的时候额外的参数，如果没有就不传

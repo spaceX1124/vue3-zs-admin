@@ -1,7 +1,6 @@
 <script lang="tsx">
-import { PropType } from 'vue'
+import { PropType, VNode } from 'vue'
 import { VxeColumnSlotTypes } from 'vxe-table'
-import { Common } from '@/types'
 export default {
   name: 'cellRender',
   props: {
@@ -12,7 +11,7 @@ export default {
     },
     // 表头字段信息
     column: {
-      type: Object as PropType<Common.BasicForm>,
+      type: Object as PropType<{title: string; width: number;cellRender: (params: {rowIndex: number;row: Global.Recordable}) => VNode}>,
       required: true
     }
   },
@@ -21,7 +20,6 @@ export default {
     return () => {
       // 执行表头字段中的cellRender函数
       return props.column?.cellRender ? props.column.cellRender({
-        column: props.column,
         rowIndex: props.scope.$rowIndex,
         row: props.scope.row
       }) : '-'

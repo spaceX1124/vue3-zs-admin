@@ -1,4 +1,4 @@
-import type { BasicTableProps, PaginationInfo } from '../types/table.ts'
+import type { BasicTableProps } from '../types/table.ts'
 import { ComputedRef } from 'vue'
 import { cloneDeep } from '@/utils/tools.ts'
 import { Common } from '@/types'
@@ -6,6 +6,7 @@ import { http } from '@/utils/http'
 import { isArray, isBoolean, isNullOrUndefOrEmpty } from '@/utils/is.ts'
 import { ElImage } from 'element-plus'
 import { isString } from 'lodash-es'
+import { tableValueConfig } from '@/components/common/Table/src/helper.tsx'
 
 interface Result {
     getColumns: ComputedRef<Common.BasicForm[]>
@@ -24,9 +25,8 @@ export function useColumns (innerProps:ComputedRef<BasicTableProps>): Result {
   function dealColumnAndFilter () {
     // 没传表头，直接return
     if (!innerProps.value.schemas) return
-    let columnsArr: Common.BasicForm[] = []
     // 过滤字段
-    columnsArr = cloneDeep(innerProps.value.schemas).filter(column => {
+    const columnsArr = cloneDeep(innerProps.value.schemas).filter(column => {
       if(!column.tableHidden) {
         return {
           ...column
@@ -57,74 +57,7 @@ export function useColumns (innerProps:ComputedRef<BasicTableProps>): Result {
       }
       // 没有自定义渲染的情况下
       if (!column.cellRender || !column.text) {
-        let strategyFn
-        switch (column.component) {
-          case 'Select':
-            // 多选
-            if ((column as any)?.componentProps?.multiple) {
-              strategyFn = (column: Common.BasicForm, value: any): any => {
-                const { dataList, async, splitStyle = ',' } = column
-                const tempArrValue: any[] = !isNullOrUndefOrEmpty(value) ?
-                  isArray(value) ? value.map(String) : value.split(',')
-                  : []
-                let resultArr: Global.Recordable[] = []
-                if (dataList) {
-                  resultArr = dataList.filter((item: Global.Recordable) => {
-                    if (tempArrValue?.includes(String(item[async?.value || 'value']))) {
-                      return item
-                    }
-                  })
-                }
-                if (resultArr) {
-                  return resultArr.map((item: Global.Recordable) => item[async?.label || 'label']).join(splitStyle)
-                } else {
-                  return '-'
-                }
-              }
-            } else { // 单选
-              strategyFn = (column: Common.BasicForm, value: any): any => {
-                const { dataList, async } = column
-                const curItem = dataList?.find(item => {
-                  if (isBoolean(value)) {
-                    return item[async?.value || 'value'] === value
-                  } else {
-                    return String(item[async?.value || 'value']) === String(value)
-                  }
-                })
-                return curItem ? curItem[async?.label || 'label'] : '-'
-              }
-            }
-            // 多选
-            break
-          case 'Input':
-            strategyFn = (column: Common.BasicForm, value: any): any => {
-              return value
-            }
-            break
-          case 'Upload':
-            column.cellRender = (params) => {
-              let imageList = []
-              if (params.row[params.column.key]) {
-                if (isString(params.row[params.column.key])) {
-                  imageList = params.row[params.column.key].split(',')
-                } else if(isArray(params.row[params.column.key])) {
-                  imageList = params.row[params.column.key]
-                } else {
-                  imageList = []
-                }
-              }
-              // 这儿显示的是缩略图，不需要太要求样式
-              return h(ElImage, {
-                src: imageList[0] || '',
-                previewSrcList: imageList,
-                fit: 'cover',
-                style: {
-                  width: '40px!important',
-                  height: '40px!important'
-                }
-              })
-            }
-        }
+        const strategyFn = tableValueConfig[column.component]
         if (strategyFn) {
           column.text = (row: Global.Recordable) => strategyFn(column, row[column.key])
         }
@@ -133,7 +66,12 @@ export function useColumns (innerProps:ComputedRef<BasicTableProps>): Result {
     })
     console.log(columns, 'columns')
   }
-  onMounted(() => {
+  // onMounted(() => {
+  //   dealColumnAndFilter()
+  // })
+
+  watch(() => innerProps.value.schemas, (newVal) => {
+    console.log(newVal, 'newVal111')
     dealColumnAndFilter()
   })
 

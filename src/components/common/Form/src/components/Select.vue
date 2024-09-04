@@ -65,7 +65,7 @@ const props = withDefaults(defineProps<PropsType>(), {
 
 const emit = defineEmits(['update:modelValue'])
 const innerValue = computed({
-  get() {
+  get () {
     // 根据多选和单选处理值的类型
     if (isNullOrUndefOrEmpty(props.modelValue)) return props.options.multiple ? [] : ''
     if (props.options.multiple) {
@@ -80,7 +80,7 @@ const innerValue = computed({
       return String(props.modelValue)
     }
   },
-  set(newVal) {
+  set (newVal) {
     let val
     // 如果外部需要接受字符串
     if (props.options.multiple && isArray(newVal)) {
@@ -113,7 +113,7 @@ onMounted(() => {
 })
 
 // 值只可能是字符串或者字符串数组了，因为下拉数据统一处理成字符串了
-function change(val: string | string[]) {
+function change (val: string | string[]) {
   innerValue.value = val
   const { componentEmits } = props.options
   if (componentEmits && componentEmits.change) {
@@ -122,7 +122,7 @@ function change(val: string | string[]) {
 }
 
 // 远程加载数据
-async function focusRemoteMethod() {
+async function focusRemoteMethod () {
   if (unref(flag) && props.options.async && props.options.async.url && !props.options.async.remote) {
     try {
       const { url, data } = props.options.async
@@ -140,7 +140,7 @@ async function focusRemoteMethod() {
 }
 
 // 输入搜索加载远程数据，还是加一下防抖
-function remoteMethod(query?: string) {
+function remoteMethod (query?: string) {
   if (query) {
     debounceSearch(query)
   } else {
@@ -148,7 +148,7 @@ function remoteMethod(query?: string) {
   }
 }
 // 输入搜索请求
-async function searchData(query?: string) {
+async function searchData (query?: string) {
   if (props.options.async && props.options.async.url && props.options.async.remote) {
     try {
       const { url, data, remoteKey } = props.options.async
@@ -175,7 +175,7 @@ async function searchData(query?: string) {
   }
 }
 // 处理下拉数据
-function dealDataList(arr?: Global.Recordable[]) {
+function dealDataList (arr?: Global.Recordable[]) {
   const { hiddenOptions, disabledOptions } = props.options
   let label = props.options?.async?.label || 'label'
   let value = props.options?.async?.value || 'value'
@@ -212,5 +212,6 @@ function dealDataList(arr?: Global.Recordable[]) {
     }
   }
   showList.value = listData
+  console.log(showList, 'showList')
 }
 </script>
